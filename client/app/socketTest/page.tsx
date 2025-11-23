@@ -7,10 +7,7 @@ export default function RealtimeData() {
   useEffect(() => {
     // Cambia ws://localhost:4000 por la URL de tu backend en producción
     const ws = new WebSocket(
-      (process.env.NEXT_PUBLIC_API_URL ?? "ws://localhost:4000").replace(
-        /^http/,
-        "ws"
-      )
+      process.env.NEXT_PUBLIC_WS_URL ?? "ws://localhost:4000"
     );
 
     ws.onmessage = (event) => {
