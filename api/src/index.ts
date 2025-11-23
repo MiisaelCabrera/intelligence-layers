@@ -7,6 +7,7 @@ import usersRouter from "./api/users/users.contract";
 import configRouter from "./api/config/config.contract";
 import { seed } from "./lib/seed";
 import getPointHandler from "./api/points/points.contract";
+import { prisma } from "./lib/prisma";
 import { WebSocketServer } from "ws";
 import { startLidarSimulator } from "./scripts/lidar-simulator";
 
@@ -55,13 +56,16 @@ bootstrap()
     });
     const wss = new WebSocketServer({ server });
 
-    wss.on("connection", (ws) => {
+    wss.on("connection", async (ws) => {
       console.log("New WebSocket client connected");
 
+      const users = await prisma.users.findMany();
+      console.log("Current users in the database:", users);
       const interval = setInterval(async () => {
         const data = {
           timestamp: new Date(),
           message: "Datos enviados desde backend",
+          users: users,
         };
         ws.send(JSON.stringify(data));
       }, 1000);
