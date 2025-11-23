@@ -11,8 +11,10 @@
   "dependencies": {
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.4.0",
+    "apexcharts": "^5.3.6",
     "next": "16.0.3",
     "react": "19.2.0",
+    "react-apexcharts": "^1.8.0",
     "react-dom": "19.2.0",
     "three": "^0.181.2"
   },
