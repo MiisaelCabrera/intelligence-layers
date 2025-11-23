@@ -1,7 +1,7 @@
 import { text } from "stream/consumers";
 
 const API_URL = process.env.API_URL ?? "http://localhost:4000";
-const INTERVAL_MS = Number(process.env.TAMPING_DATA_FETCHER_INTERVAL_MS ?? "1800");
+const INTERVAL_MS = Number(process.env.TAMPING_DATA_FETCHER_INTERVAL_MS ?? "2000");
 
 export async function startTampingSimulator() {
   let counter = 1;

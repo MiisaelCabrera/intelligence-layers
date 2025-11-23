@@ -30,7 +30,9 @@ const bootstrap = async () => {
   startGprSimulator();
   startFrontCameraSimulator();
   startGeometryPredictorSimulator();
-  startTampingSimulator();
+  setTimeout(() => {
+    startTampingSimulator();
+  }, 5000);
 };
 
 app.use(

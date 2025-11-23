@@ -1,5 +1,5 @@
 const API_URL = process.env.API_URL ?? "http://localhost:4000";
-const INTERVAL_MS = Number(process.env.GEOMETRY_PREDICTOR_INTERVAL_MS ?? "2500");
+const INTERVAL_MS = Number(process.env.GEOMETRY_PREDICTOR_INTERVAL_MS ?? "2000");
 
 const randomFloat = (min: number, max: number) => {
   return Math.random() * (max - min) + min;

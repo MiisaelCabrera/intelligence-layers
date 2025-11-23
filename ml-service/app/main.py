@@ -36,7 +36,7 @@ class DecisionResponse(BaseModel):
   decision: str
   score: float
   fallback: bool = False
-  vector: List[float] | None = None
+  vector: List[float]
 
 
 class FeedbackRequest(BaseModel):
