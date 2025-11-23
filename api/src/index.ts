@@ -55,7 +55,7 @@ bootstrap()
     const server = app.listen(PORT, () => {
       console.log(` Backend running on port ${PORT}`);
     });
-    const wss = new WebSocketServer({ server });
+    const wss = new WebSocketServer({ server, path: "/ws/alerts" });
     setWebSocketServer(wss);
 
     wss.on("connection", (ws) => {
