@@ -151,4 +151,5 @@ Next steps / Improvements
 
 Appendix
 
-[dbdocs]: https://dbdocs.io/MiisaelCabrera/Intelligence-Layer - Relational Database
+- Database schema — [DB Docs: Intelligence Layer](https://dbdocs.io/MiisaelCabrera/Intelligence-Layer)
+- Plasser & Theurer — Stopfung (Nivellier / Hebe / Richt / Stopfmaschinen): [https://www.plassertheurer.com/en/machine/technologie/stopfung/ueber-stopfung/schneller-zu-hoeherer-qualitaet-nivellier-hebe-richt-und-stopfmaschinen](https://www.plassertheurer.com/en/machine/technologie/stopfung/ueber-stopfung/schneller-zu-hoeherer-qualitaet-nivellier-hebe-richt-und-stopfmaschinen)
