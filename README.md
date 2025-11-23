@@ -1,4 +1,4 @@
-#🚉 Intelligence Layers
+# 🚉 Intelligence Layers
 
 Monorepo for the Intelligence Layers project — containing:
 
