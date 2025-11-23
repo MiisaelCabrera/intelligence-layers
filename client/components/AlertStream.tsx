@@ -104,19 +104,19 @@ export default function AlertStream() {
 
   const variantClasses = (entry: AlertEntry, config: ConfigResponse | null) => {
     if (config && entry.alert.value <= config.urgentThreshold) {
+      // Urgentes: rojo suave
       return {
-        container: "bg-red-950/40 border-red-600/40",
-        label: "text-red-200",
-        value: "text-red-300",
-        badge: "bg-red-700 text-red-100",
+        container: "bg-red-50 border border-red-100",
+        label: "text-red-700",
+        value: "text-red-600",
       };
     }
 
+    // No urgentes: amber suave
     return {
-      container: "bg-slate-800/30 border-slate-700/40",
-      label: "text-slate-300",
-      value: "text-emerald-300",
-      badge: "bg-slate-700 text-slate-200",
+      container: "bg-amber-50 border border-amber-100",
+      label: "text-amber-800",
+      value: "text-amber-700",
     };
   };
 
@@ -136,35 +136,47 @@ export default function AlertStream() {
     if (!container) return;
 
     const { scrollTop, clientHeight, scrollHeight } = container;
-    const atBottom = scrollTop + clientHeight >= scrollHeight - SCROLL_THRESHOLD;
+    const atBottom =
+      scrollTop + clientHeight >= scrollHeight - SCROLL_THRESHOLD;
     autoScrollRef.current = atBottom;
   };
 
   return (
-    <section className="w-full max-w-2xl mx-auto bg-slate-900 text-slate-100 rounded-lg border border-slate-700 shadow-lg overflow-hidden">
-      <header className="px-4 py-3 border-b border-slate-700 bg-slate-800/70">
-        <h2 className="text-lg font-semibold">Live Alerts Stream</h2>
-        <p className="text-sm text-slate-400 flex flex-wrap items-center gap-2">
+    <section className="w-full max-w-2xl mx-auto bg-white text-[#111827] rounded-3xl border border-[#e5e7eb] shadow-[0_18px_40px_rgba(15,23,42,0.08)] overflow-hidden">
+      {/* Header */}
+      <header className="px-5 md:px-6 py-4 border-b border-[#f3f4f6] bg-gradient-to-r from-white via-white to-[#f9fafb]">
+        <h2 className="text-base md:text-lg font-semibold">
+          Live Alerts Stream
+        </h2>
+        <p className="text-xs md:text-sm text-[#6b7280] flex flex-wrap items-center gap-2">
           Streaming alert events from the backend websocket.
           {config && (
-            <span className="inline-flex gap-2 text-xs text-slate-500">
+            <span className="inline-flex gap-3 text-[11px] text-[#9ca3af]">
               <span>
-                urgent ≤ <span className="font-semibold">{config.urgentThreshold}</span>
+                urgent ≤{" "}
+                <span className="font-semibold text-red-600">
+                  {config.urgentThreshold}
+                </span>
               </span>
               <span>
-                caution ≤ <span className="font-semibold">{config.confidenceThreshold}</span>
+                caution ≤{" "}
+                <span className="font-semibold text-amber-600">
+                  {config.confidenceThreshold}
+                </span>
               </span>
             </span>
           )}
         </p>
       </header>
+
+      {/* Stream list */}
       <div
         ref={scrollRef}
         onScroll={handleScroll}
-        className="h-[32rem] overflow-y-auto divide-y divide-slate-800"
+        className="h-[18rem] overflow-y-auto bg-white px-4 py-4 space-y-3"
       >
         {filteredEvents.length === 0 ? (
-          <div className="px-4 py-6 text-slate-500 text-sm text-center">
+          <div className="px-2 py-6 text-[#9ca3af] text-sm text-center">
             Waiting for alerts…
           </div>
         ) : (
@@ -174,20 +186,27 @@ export default function AlertStream() {
             return (
               <article
                 key={event.clientId}
-                className={`px-4 py-4 flex flex-col gap-3 border-b border-slate-800/40 ${styles.container} transition-colors`}
+                className={`px-4 py-3 flex flex-col gap-3 rounded-2xl ${styles.container} shadow-[0_4px_12px_rgba(15,23,42,0.04)] transition-colors`}
               >
-                <div className="flex flex-wrap items-center justify-between gap-2 text-xs tracking-wide uppercase text-slate-500">
-                  <span className="font-mono text-sky-300">pt: {event.pt.toFixed(1)}</span>
-                  <time className="text-slate-500" dateTime={event.timestamp}>
+                {/* Header row */}
+                <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] tracking-[0.14em] uppercase text-[#9ca3af]">
+                  <span className="font-mono text-sky-600">
+                    pt: {event.pt.toFixed(1)}
+                  </span>
+                  <time
+                    className="text-[#9ca3af]"
+                    dateTime={event.timestamp}
+                  >
                     {new Date(event.timestamp).toLocaleTimeString()}
                   </time>
                 </div>
 
+                {/* Label + value */}
                 <div className="flex items-center justify-between">
                   <span className={`text-sm font-medium ${styles.label}`}>
                     {event.alert.label}
                   </span>
-                  <span className={`text-lg font-semibold ${styles.value}`}>
+                  <span className={`text-lg font-semibold tabular-nums ${styles.value}`}>
                     {event.alert.value.toFixed(2)}
                   </span>
                 </div>
@@ -199,4 +218,3 @@ export default function AlertStream() {
     </section>
   );
 }
-

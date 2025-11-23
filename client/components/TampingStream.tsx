@@ -150,15 +150,15 @@ export default function TampingStream() {
   const stylingForDecision = (decision: DecisionLabel) => {
     if (decision === "IGNORE") {
       return {
-        container: "bg-red-950/60 border-red-500/40",
-        badge: "bg-red-700 text-red-100",
-        text: "text-red-200",
+        container: "bg-red-50 border border-red-100",
+        badge: "bg-red-100 text-red-700",
+        text: "text-red-700",
       };
     }
     return {
-      container: "bg-emerald-950/40 border-emerald-500/30",
-      badge: "bg-emerald-700 text-emerald-100",
-      text: "text-emerald-200",
+      container: "bg-emerald-50 border border-emerald-100",
+      badge: "bg-emerald-100 text-emerald-700",
+      text: "text-emerald-700",
     };
   };
 
@@ -179,20 +179,25 @@ export default function TampingStream() {
   };
 
   return (
-    <section className="w-full max-w-2xl mx-auto bg-slate-900 text-slate-100 rounded-lg border border-slate-700 shadow-lg overflow-hidden">
-      <header className="px-4 py-3 border-b border-slate-700 bg-slate-800/70">
-        <h2 className="text-lg font-semibold">Tamping Decisions</h2>
-        <p className="text-sm text-slate-400">
-          Streaming tamping proceed/ignore decisions from the backend service.
+    <section className="w-full max-w-2xl mx-auto bg-white text-[#111827] rounded-3xl border border-[#e5e7eb] shadow-[0_18px_40px_rgba(15,23,42,0.08)] overflow-hidden">
+      {/* Header */}
+      <header className="px-5 md:px-6 py-4 border-b border-[#f3f4f6] bg-gradient-to-r from-white via-white to-[#f9fafb]">
+        <h2 className="text-base md:text-lg font-semibold">
+          Tamping Decisions
+        </h2>
+        <p className="text-xs md:text-sm text-[#6b7280]">
+          Live proceed/ignore decisions streamed from the backend service.
         </p>
       </header>
+
+      {/* Stream list */}
       <div
         ref={scrollRef}
         onScroll={handleScroll}
-        className="h-[32rem] overflow-y-auto divide-y divide-slate-800"
+        className="h-[32rem] overflow-y-auto bg-white px-4 py-4 space-y-3"
       >
         {events.length === 0 ? (
-          <div className="px-4 py-6 text-slate-500 text-sm text-center">
+          <div className="px-2 py-6 text-[#9ca3af] text-sm text-center">
             Waiting for tamping decisions…
           </div>
         ) : (
@@ -202,39 +207,46 @@ export default function TampingStream() {
             return (
               <article
                 key={event.clientId}
-                className={`px-4 py-4 flex flex-col gap-3 border-b border-slate-800/40 ${styles.container} transition-colors`}
+                className={`px-4 py-3 flex flex-col gap-3 rounded-2xl ${styles.container} shadow-[0_4px_12px_rgba(15,23,42,0.04)] transition-colors`}
               >
-                <div className="flex flex-wrap items-center justify-between gap-2 text-xs tracking-wide uppercase text-slate-500">
-                  <span className="font-mono text-sky-300">
+                {/* Header row */}
+                <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] tracking-wide uppercase text-[#9ca3af]">
+                  <span className="font-mono text-sky-600">
                     pt: {event.pt.toFixed(1)}
                   </span>
-                  <time className="text-slate-500" dateTime={event.timestamp}>
+                  <time
+                    className="text-[#9ca3af]"
+                    dateTime={event.timestamp}
+                  >
                     {new Date(event.timestamp).toLocaleTimeString()}
                   </time>
                 </div>
 
+                {/* Decision + confidence */}
                 <div className="flex items-center justify-between text-sm">
                   <span className={`font-semibold ${styles.text}`}>
                     {event.decision}
                   </span>
-                  <span className="text-slate-400">
+                  <span className="text-[#6b7280]">
                     confidence {event.score.toFixed(2)}
                   </span>
                 </div>
 
+                {/* Suggested speed */}
                 {typeof event.suggestedSpeedKmh === "number" && (
-                  <div className="text-xs text-slate-400">
+                  <div className="text-xs text-[#6b7280]">
                     AI suggested speed:{" "}
-                    <span className="text-emerald-300 font-semibold">
+                    <span className="text-emerald-700 font-semibold">
                       {event.suggestedSpeedKmh.toFixed(2)} km/h
                     </span>
                   </div>
                 )}
 
+                {/* Badges + details */}
                 <div className="flex flex-wrap items-center gap-2 text-xs">
                   {event.fallback && (
                     <span
-                      className={`inline-flex items-center px-2 py-1 text-[10px] uppercase tracking-widest rounded ${styles.badge}`}
+                      className={`inline-flex items-center px-2 py-1 text-[10px] uppercase tracking-[0.18em] rounded-full ${styles.badge}`}
                     >
                       rule fallback
                     </span>
@@ -242,12 +254,13 @@ export default function TampingStream() {
                   <button
                     type="button"
                     onClick={() => setSelected(event)}
-                    className="px-2 py-1 text-xs rounded border border-slate-600 text-slate-300 hover:bg-slate-800"
+                    className="px-2 py-1 text-xs rounded-full border border-[#d1d5db] text-[#4b5563] hover:bg-[#f3f4f6] transition-colors"
                   >
                     View details
                   </button>
                 </div>
 
+                {/* Feedback buttons */}
                 <div className="flex flex-wrap items-center gap-2">
                   <button
                     type="button"
@@ -256,7 +269,7 @@ export default function TampingStream() {
                       event.feedbackStatus === "submitting" ||
                       event.feedbackStatus === "submitted"
                     }
-                    className="px-3 py-1 text-xs font-medium rounded bg-emerald-700 text-emerald-50 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-emerald-600 transition-colors"
+                    className="px-3 py-1.5 text-xs font-medium rounded-full bg-emerald-500 text-white disabled:opacity-40 disabled:cursor-not-allowed hover:bg-emerald-600 transition-colors"
                   >
                     Mark Proceed
                   </button>
@@ -267,18 +280,18 @@ export default function TampingStream() {
                       event.feedbackStatus === "submitting" ||
                       event.feedbackStatus === "submitted"
                     }
-                    className="px-3 py-1 text-xs font-medium rounded bg-slate-800 text-slate-200 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-700 transition-colors"
+                    className="px-3 py-1.5 text-xs font-medium rounded-full bg-white text-[#111827] border border-[#d1d5db] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#f3f4f6] transition-colors"
                   >
                     Mark Ignore
                   </button>
                   {event.feedbackStatus === "submitted" &&
                     event.feedbackLabel && (
-                      <span className="text-xs text-emerald-400">
+                      <span className="text-xs text-emerald-600">
                         Feedback saved ({event.feedbackLabel})
                       </span>
                     )}
                   {event.feedbackStatus === "error" && (
-                    <span className="text-xs text-red-400">
+                    <span className="text-xs text-red-500">
                       Feedback failed
                     </span>
                   )}
@@ -289,58 +302,59 @@ export default function TampingStream() {
         )}
       </div>
 
+      {/* Modal de detalles */}
       {selected && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-          <div className="bg-slate-900 border border-slate-700 rounded-lg shadow-xl max-w-2xl w-full mx-4 p-6 flex flex-col gap-4">
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white border border-[#e5e7eb] rounded-3xl shadow-2xl max-w-2xl w-full mx-4 p-6 flex flex-col gap-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-slate-100">
+              <h3 className="text-lg font-semibold text-[#111827]">
                 Tamping decision details
               </h3>
               <button
                 type="button"
                 onClick={() => setSelected(null)}
-                className="text-slate-400 hover:text-slate-200"
+                className="text-[#6b7280] hover:text-[#111827] text-sm"
               >
                 Close
               </button>
             </div>
 
-            <div className="space-y-3 text-sm text-slate-300">
-              <div className="flex flex-wrap gap-3 text-xs text-slate-400">
+            <div className="space-y-4 text-sm text-[#374151]">
+              <div className="flex flex-wrap gap-3 text-xs text-[#6b7280]">
                 <span>
                   sample:{" "}
-                  <span className="font-mono text-slate-200">
+                  <span className="font-mono text-[#111827]">
                     {selected.sampleId}
                   </span>
                 </span>
                 <span>
                   pt:{" "}
-                  <span className="font-mono text-slate-200">
+                  <span className="font-mono text-[#111827]">
                     {selected.pt.toFixed(1)}
                   </span>
                 </span>
                 <span>
                   confidence:{" "}
-                  <span className="font-mono text-slate-200">
+                  <span className="font-mono text-[#111827]">
                     {selected.score.toFixed(3)}
                   </span>
                 </span>
               </div>
 
               <div>
-                <h4 className="text-xs uppercase tracking-widest text-slate-500 mb-1">
+                <h4 className="text-[11px] uppercase tracking-[0.18em] text-[#9ca3af] mb-1">
                   Snapshot
                 </h4>
-                <pre className="bg-slate-950 border border-slate-800 rounded p-3 max-h-60 overflow-y-auto text-xs">
+                <pre className="bg-[#f9fafb] border border-[#e5e7eb] rounded-2xl p-3 max-h-60 overflow-y-auto text-xs text-[#374151]">
                   {JSON.stringify(parseSnapshot(selected.snapshot), null, 2)}
                 </pre>
               </div>
 
               <div>
-                <h4 className="text-xs uppercase tracking-widest text-slate-500 mb-1">
+                <h4 className="text-[11px] uppercase tracking-[0.18em] text-[#9ca3af] mb-1">
                   Embedding (first 24 dims)
                 </h4>
-                <pre className="bg-slate-950 border border-slate-800 rounded p-3 max-h-60 overflow-y-auto text-xs">
+                <pre className="bg-[#f9fafb] border border-[#e5e7eb] rounded-2xl p-3 max-h-60 overflow-y-auto text-xs text-[#374151]">
                   {selected.vector && selected.vector.length
                     ? selected.vector
                         .slice(0, 24)

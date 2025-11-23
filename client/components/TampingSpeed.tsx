@@ -40,17 +40,21 @@ export default function TampingSpeed() {
         const data = JSON.parse(event.data) as TampingEvent;
         if (data.type !== "tamping-decision") return;
 
-        setEvents((prev) => [
-          { pt: data.pt, timestamp: data.timestamp, type: data.type },
-          ...prev,
-        ].slice(0, MAX_SAMPLES));
+        setEvents((prev) =>
+          [
+            { pt: data.pt, timestamp: data.timestamp, type: data.type },
+            ...prev,
+          ].slice(0, MAX_SAMPLES)
+        );
       } catch (error) {
         console.error("Failed to process tamping payload", error);
       }
     };
 
-    socket.onopen = () => console.log("Connected to tamping websocket (speed)");
-    socket.onerror = (error) => console.error("Tamping speed WS error", error);
+    socket.onopen = () =>
+      console.log("Connected to tamping websocket (speed)");
+    socket.onerror = (error) =>
+      console.error("Tamping speed WS error", error);
     socket.onclose = () => console.log("Tamping speed websocket closed");
 
     return () => {
@@ -89,58 +93,63 @@ export default function TampingSpeed() {
   }, [events]);
 
   return (
-    <section className="w-full max-w-2xl mx-auto bg-slate-900 text-slate-100 rounded-lg border border-slate-700 shadow-lg overflow-hidden">
-      <header className="px-4 py-3 border-b border-slate-700 bg-slate-800/70">
-        <h2 className="text-lg font-semibold">Tamping Speed</h2>
-        <p className="text-sm text-slate-400">
+    <section className="w-full max-w-2xl mx-auto bg-white text-[#111827] rounded-3xl border border-[#e5e7eb] shadow-[0_14px_32px_rgba(15,23,42,0.08)] overflow-hidden">
+      {/* Header */}
+      <header className="px-5 md:px-6 py-3 border-b border-[#f3f4f6] bg-gradient-to-r from-white via-white to-[#f9fafb]">
+        <h2 className="text-base font-semibold">Tamping Speed</h2>
+        <p className="text-xs text-[#6b7280]">
           Estimated movement speed based on tamping decision frequency.
         </p>
       </header>
 
-      <div className="p-6 flex flex-col gap-4 text-sm text-slate-300">
+      {/* Body */}
+      <div className="p-4 flex flex-col gap-4 text-xs text-[#4b5563]">
+        {/* Speed headline */}
         <div className="flex flex-wrap items-baseline gap-2">
-          <span className="text-xs uppercase tracking-widest text-slate-500">
+          <span className="text-[11px] uppercase tracking-[0.18em] text-[#9ca3af]">
             Estimated speed
           </span>
-          <span className="text-3xl font-bold text-emerald-300">
+          <span className="text-2xl font-bold text-emerald-600 tabular-nums">
             {Number.isFinite(speedInfo.kmh)
               ? `${speedInfo.kmh.toFixed(2)} km/h`
               : "n/a"}
           </span>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 text-xs">
-          <div className="bg-slate-950/40 border border-slate-800 rounded p-3">
-            <span className="block text-slate-500 uppercase tracking-widest">
+        {/* Small stats */}
+        <div className="grid grid-cols-2 gap-3">
+          <div className="bg-[#f9fafb] border border-[#e5e7eb] rounded-2xl p-3">
+            <span className="block text-[11px] text-[#9ca3af] uppercase tracking-[0.18em] mb-1">
               Points traversed
             </span>
-            <span className="text-slate-200 font-semibold">
+            <span className="text-[#111827] font-semibold">
               {speedInfo.pointDelta}
             </span>
-            <span className="text-slate-500 block">
+            <span className="text-[#6b7280] block">
               ({(speedInfo.pointDelta * DISTANCE_PER_POINT_METERS).toFixed(2)} m)
             </span>
           </div>
 
-          <div className="bg-slate-950/40 border border-slate-800 rounded p-3">
-            <span className="block text-slate-500 uppercase tracking-widest">
+          <div className="bg-[#f9fafb] border border-[#e5e7eb] rounded-2xl p-3">
+            <span className="block text-[11px] text-[#9ca3af] uppercase tracking-[0.18em] mb-1">
               Time interval
             </span>
-            <span className="text-slate-200 font-semibold">
+            <span className="text-[#111827] font-semibold">
               {speedInfo.timeDeltaSec.toFixed(2)} s
             </span>
-            <span className="text-slate-500 block">
+            <span className="text-[#6b7280] block">
               ({(speedInfo.timeDeltaSec / 60).toFixed(2)} min)
             </span>
           </div>
         </div>
 
+        {/* Latest samples log (compact) */}
         {events.length > 0 && (
-          <div className="bg-slate-950/40 border border-slate-800 rounded p-3 text-xs">
-            <span className="block text-slate-500 uppercase tracking-widest mb-1">
-              latest samples ({events.length})
+          <div className="bg-[#f9fafb] border border-[#e5e7eb] rounded-2xl p-3 text-[11px]">
+            <span className="block text-[11px] text-[#9ca3af] uppercase tracking-[0.18em] mb-1">
+              Latest samples ({events.length})
             </span>
-            <pre className="text-slate-400 max-h-40 overflow-y-auto">
+            <pre className="text-[#6b7280] max-h-24 overflow-y-auto leading-relaxed">
               {events
                 .map(
                   (event) =>
@@ -156,4 +165,3 @@ export default function TampingSpeed() {
     </section>
   );
 }
-
