@@ -11,7 +11,7 @@ import {
 export const pointsRouter = Router();
 
 pointsRouter.get("/", listPointsHandler);
-pointsRouter.get("/:id", getPointHandler);
+pointsRouter.get("/fetch/:pt", getPointHandler);
 pointsRouter.post("/", createPointHandler);
 pointsRouter.put("/:id", updatePointHandler);
 pointsRouter.post("/alerts", appendAlertHandler);

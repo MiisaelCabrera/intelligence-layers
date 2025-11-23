@@ -152,6 +152,11 @@ const parseIdParam = (param: string | undefined) => {
   return id;
 };
 
+const parsePtParam = (param: string | undefined): number | null => {
+  const val = Number(param);
+  return Number.isFinite(val) ? val : null;
+};
+
 export const listPointsHandler = async (
   _req: Request,
   res: Response,
@@ -171,12 +176,12 @@ export const getPointHandler = async (
   next: NextFunction
 ) => {
   try {
-    const id = parseIdParam(req.params.id);
-    if (id === null) {
-      return res.status(400).json({ error: "Invalid point id" });
+    const pt = parsePtParam(req.params.pt);
+    if (pt === null) {
+      return res.status(400).json({ error: `Invalid point id - ${pt}` });
     }
 
-    const point = await pointsService.get(id);
+    const point = await pointsService.get_point(pt);
     if (!point) {
       return res.status(404).json({ error: "Point not found" });
     }

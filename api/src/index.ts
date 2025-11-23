@@ -12,6 +12,8 @@ import { startGprSimulator } from "./scripts/gpr-simulator";
 import { setWebSocketServer } from "./lib/websocket";
 import { startFrontCameraSimulator } from "./scripts/front-camera-simulator";
 import { startGeometryPredictorSimulator } from "./scripts/geometry-predictor-simulator";
+import { startTampingSimulator } from "./scripts/tamping-executer-simulator";
+import { startConfigSetterSimulator } from "./scripts/config-setter-simulator";
 
 dotenv.config();
 
@@ -28,6 +30,8 @@ const bootstrap = async () => {
   startGprSimulator();
   startFrontCameraSimulator();
   startGeometryPredictorSimulator();
+  startTampingSimulator();
+  startConfigSetterSimulator()
 };
 
 app.use(

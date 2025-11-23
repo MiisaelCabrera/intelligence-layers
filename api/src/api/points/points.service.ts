@@ -51,6 +51,10 @@ export class PointsService {
     return prisma.points.findUnique({ where: { id } });
   }
 
+  async get_point(pt: number) {
+    return prisma.points.findFirst({ where: { pt } });
+  }
+
   async create(input: CreatePointInput) {
     return prisma.points.create({
       data: {
