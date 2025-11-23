@@ -1,5 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "../../lib/prisma";
+import { broadcastTampingDecision } from "../../lib/websocket";
 
 const HALT_SERVICE_URL =
   process.env.HALT_SERVICE_URL && process.env.HALT_SERVICE_URL.trim().length > 0
@@ -35,6 +36,13 @@ export class TampingService {
     const decision = await this.requestDecision(pt, snapshot);
 
     await this.logDecision(point?.id ?? null, pt, instructions, decision);
+
+    broadcastTampingDecision({
+      pt,
+      decision: decision.decision,
+      score: decision.score,
+      fallback: decision.fallback ?? false,
+    });
 
     return { ...decision, pt };
   }

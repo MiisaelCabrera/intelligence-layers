@@ -9,7 +9,7 @@ import { seed } from "./lib/seed";
 import { WebSocketServer } from "ws";
 import { startLidarSimulator } from "./scripts/lidar-simulator";
 import { startGprSimulator } from "./scripts/gpr-simulator";
-import { setWebSocketServer } from "./lib/websocket";
+import { setAlertServer, setTampingServer } from "./lib/websocket";
 import { startFrontCameraSimulator } from "./scripts/front-camera-simulator";
 import { startGeometryPredictorSimulator } from "./scripts/geometry-predictor-simulator";
 import tampingRouter from "./api/tamping/tamping.contract";
@@ -59,23 +59,61 @@ app.get("/api/hello", (_req: Request, res: Response) => {
 bootstrap()
   .then(() => {
     const server = app.listen(PORT, () => {
+      console.log(` Backend running on port ${PORT}`);
     });
-    const wss = new WebSocketServer({ server, path: "/ws/alerts" });
-    setWebSocketServer(wss);
 
-    wss.on("connection", (ws) => {
-      console.log("New WebSocket client connected");
+    const alertWss = new WebSocketServer({ noServer: true });
+    setAlertServer(alertWss);
+
+    alertWss.on("connection", (ws) => {
+      console.log("New alerts WebSocket client connected");
       ws.send(
         JSON.stringify({
           type: "connected",
+          channel: "alerts",
           timestamp: new Date().toISOString(),
           message: "Subscribed to alert stream",
         })
       );
 
       ws.on("close", () => {
-        console.log("Client disconnected");
+        console.log("Alerts client disconnected");
       });
+    });
+
+    const tampingWss = new WebSocketServer({ noServer: true });
+    setTampingServer(tampingWss);
+
+    tampingWss.on("connection", (ws) => {
+      console.log("New tamping WebSocket client connected");
+      ws.send(
+        JSON.stringify({
+          type: "connected",
+          channel: "tamping",
+          timestamp: new Date().toISOString(),
+          message: "Subscribed to tamping decision stream",
+        })
+      );
+
+      ws.on("close", () => {
+        console.log("Tamping client disconnected");
+      });
+    });
+
+    server.on("upgrade", (request, socket, head) => {
+      const { url } = request;
+
+      if (url === "/ws/alerts") {
+        alertWss.handleUpgrade(request, socket, head, (ws) => {
+          alertWss.emit("connection", ws, request);
+        });
+      } else if (url === "/ws/tamping") {
+        tampingWss.handleUpgrade(request, socket, head, (ws) => {
+          tampingWss.emit("connection", ws, request);
+        });
+      } else {
+        socket.destroy();
+      }
     });
   })
 

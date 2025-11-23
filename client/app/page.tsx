@@ -1,5 +1,6 @@
 import AlertStream from '@/components/AlertStream';
 import Scene3D from '@/components/Scene3D';
+import TampingStream from '@/components/TampingStream';
 
 export default function HomePage() {
   return (
@@ -7,6 +8,7 @@ export default function HomePage() {
       <h1 className="text-3xl font-bold">Demo 3D</h1>
       <Scene3D />
       <AlertStream />
+      <TampingStream />
     </main>
   );
 }
