@@ -42,26 +42,34 @@ A running PostgreSQL database or adjust the DATABASE_URL to match your setup
 
 Create a .env file in api/:
 
+```
 DATABASE_URL=postgresql://USER:PASS@HOST:PORT/DATABASE?schema=public
 PORT=4000
 FRONTEND_URL=http://localhost:3000
+```
 
 # Optional simulator envs
+```
 TAMPING_DATA_FETCHER_INTERVAL_MS=1000
 TAMPING_INITIAL_DELAY_SEC=3
 API_URL=http://localhost:4000
+```
 
 2) Install Dependencies
+
+```
 cd api
 pnpm install
-
-3) Generate Prisma Client
+```
+4) Generate Prisma Client
 pnpm exec prisma generate
 
 
 If Prisma complains about a missing DATABASE_URL:
 
+```
 $env:DATABASE_URL='postgresql://user:pass@localhost:5432/intelligence_layers?schema=public'; pnpm exec prisma generate
+```
 
 4) Seed the Database
 
@@ -75,7 +83,9 @@ pnpm dev
 
 Backend runs at:
 
+```
 http://localhost:4000
+```
 
 🔍 Useful API Endpoints
 Action	Endpoint
@@ -88,11 +98,13 @@ Delete config	DELETE /api/configs/:id
 
 Examples (curl):
 
+```
 curl http://localhost:4000/api/configs
 
 curl -X POST -H "Content-Type: application/json" \
   -d "{\"confidenceThreshold\":95,\"urgentThreshold\":70}" \
   http://localhost:4000/api/configs
+```
 
 🟢 Frontend Setup (Next.js)
 
@@ -102,8 +114,10 @@ From client/:
 
 Create a .env file:
 
+```
 NEXT_PUBLIC_API_URL=http://localhost:4000
 NEXT_PUBLIC_WS_URL=ws://localhost:4000
+```
 
 2) Install Dependencies
 cd client
