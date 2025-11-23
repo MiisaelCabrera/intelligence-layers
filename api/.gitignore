@@ -1,0 +1,59 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build
+dist/
+build/
+coverage/
+
+# TypeScript
+*.tsbuildinfo
+
+# Environment variables
+.env
+.env.*.local
+.env.local
+
+# Logs
+logs
+*.log
+*.log.*
+log/
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Vscode
+.vscode/
+.idea/
+
+# Optional: Prisma
+prisma/*.db
+prisma/migrations/
+
+# Optional: PM2
+.pids
+*.pid
+*.seed
+
+# Optional: Docker
+.docker/
+docker-compose.override.yml
+
+# Optional: Tests
+jest*
+*.test.ts
+*.spec.ts
+
+# Optional: Debug
+*.swp
+*.swo
