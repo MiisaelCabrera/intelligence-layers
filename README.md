@@ -149,11 +149,6 @@ Next steps / Improvements
 - Add a docker-compose setup that starts Postgres, runs migrations, seeds DB, and starts the API and client.
 - Add tests for API routes and services.
 
-If you want, I can:
-- Add a `Makefile` or `scripts` to simplify the common commands,
-- Create a `docker-compose` flow to run everything with one command,
-- Or run the seed and a quick curl against your running API (if you want me to attempt that now).
-
 Appendix
 
 [dbdocs]: https://dbdocs.io/MiisaelCabrera/Intelligence-Layer - Relational Database
