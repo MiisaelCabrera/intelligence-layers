@@ -140,6 +140,8 @@ From `ml-service/`:
 docker-compose up --build  
 ```
 
+*NOTE:* Once you have all the three services running, you can now watch the application on live by going to the link provided on the front end setup, by default it is usually: http://localhost:3000/
+
 Simulators
 
 On API bootstrap the project starts several simulator scripts that call API endpoints to produce test data and alerts. If your API is not running when the simulators start, you will see connection errors (ECONNREFUSED). To avoid that:
