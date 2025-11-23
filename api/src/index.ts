@@ -11,6 +11,7 @@ import { startLidarSimulator } from "./scripts/lidar-simulator";
 import { startGprSimulator } from "./scripts/gpr-simulator";
 import { setWebSocketServer } from "./lib/websocket";
 import { startFrontCameraSimulator } from "./scripts/front-camera-simulator";
+import { startGeometryPredictorSimulator } from "./scripts/geometry-predictor-simulator";
 
 dotenv.config();
 
@@ -26,6 +27,7 @@ const bootstrap = async () => {
   startLidarSimulator();
   startGprSimulator();
   startFrontCameraSimulator();
+  startGeometryPredictorSimulator();
 };
 
 app.use(
