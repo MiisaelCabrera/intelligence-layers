@@ -17,7 +17,11 @@ Prerequisites
 - pnpm
 - PostgreSQL running and accessible (or adjust `DATABASE_URL` to point to your DB)
 - (Optional) Docker & docker-compose if you prefer running services in containers
+- Docker Installed
 
+To completely set up the project you need to initialize our 3 services (BackEnd, FrontEnd and ML)
+
+### BackEnd
 
 1) Set environment variables
 
@@ -95,7 +99,7 @@ Useful API endpoints (curl examples)
 
 PowerShell note: Use `curl.exe` to call the native curl shipped with Windows, or use `Invoke-RestMethod` / `Invoke-WebRequest` instead.
 
-Client (Next.js)
+### FrontEnd
 
 From `client/`:
 
@@ -125,6 +129,16 @@ pnpm dev
 ```
 
 The Next app expects the API to run on the address configured in the `.env` or `next.config.ts` — by default the frontend proxies or calls `http://localhost:4000`.
+
+### ML
+
+From `ml-service/`:
+
+1) Run the Machine Learning Service on the terminal
+
+```
+docker-compose up --build  
+```
 
 Simulators
 
