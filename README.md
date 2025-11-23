@@ -49,6 +49,7 @@ FRONTEND_URL=http://localhost:3000
 ```
 
 # Optional simulator envs
+
 ```
 TAMPING_DATA_FETCHER_INTERVAL_MS=1000
 TAMPING_INITIAL_DELAY_SEC=3
@@ -62,8 +63,10 @@ cd api
 pnpm install
 ```
 4) Generate Prisma Client
-pnpm exec prisma generate
 
+```
+pnpm exec prisma generate
+```
 
 If Prisma complains about a missing DATABASE_URL:
 
@@ -71,13 +74,7 @@ If Prisma complains about a missing DATABASE_URL:
 $env:DATABASE_URL='postgresql://user:pass@localhost:5432/intelligence_layers?schema=public'; pnpm exec prisma generate
 ```
 
-4) Seed the Database
-
-This resets tables and inserts a default user + config.
-
-pnpm exec tsx prisma/seed.ts
-
-5) Run Backend
+4) Run Backend
 pnpm dev
 
 
@@ -129,7 +126,9 @@ pnpm dev
 
 Frontend runs at:
 
+```
 http://localhost:3000
+```
 
 🔵 ML Service (Python)
 
@@ -137,8 +136,9 @@ From ml-service/:
 
 Start the ML microservice:
 
+```
 docker-compose up --build
-
+```
 
 It downloads a SentenceTransformer model (all-MiniLM-L6-v2) and exposes an API for inference.
 
@@ -166,14 +166,18 @@ Or create a config manually using /api/configs/upsert
 
 Set it inline:
 
+```
 $env:DATABASE_URL='postgresql://...' ; pnpm exec prisma generate
+```
 
 ❌ Schema changed?
 
 Run:
 
+```
 pnpm exec prisma migrate dev
 pnpm exec prisma generate
+```
 
 🗂️ Development Notes
 
