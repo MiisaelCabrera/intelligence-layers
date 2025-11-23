@@ -18,16 +18,8 @@ Prerequisites
 - PostgreSQL running and accessible (or adjust `DATABASE_URL` to point to your DB)
 - (Optional) Docker & docker-compose if you prefer running services in containers
 
-1) Install dependencies
 
-```powershell
-cd api
-pnpm install
-cd ../client
-pnpm install
-```
-
-2) Set environment variables
+1) Set environment variables
 
 Create a `.env` file in `api/` with at least:
 
@@ -37,10 +29,18 @@ PORT=4000
 FRONTEND_URL=http://localhost:3000
 ```
 
+
 You can also set simulator-specific envs:
 - `TAMPING_DATA_FETCHER_INTERVAL_MS` — interval between tamping simulator requests (ms)
 - `TAMPING_INITIAL_DELAY_SEC` — initial delay before the first tamping request (seconds)
 - `API_URL` — base URL the simulators will call (default `http://localhost:4000`)
+
+1) Install dependencies
+
+```powershell
+cd api
+pnpm install
+```
 
 3) Generate Prisma client
 
@@ -96,6 +96,27 @@ Useful API endpoints (curl examples)
 PowerShell note: Use `curl.exe` to call the native curl shipped with Windows, or use `Invoke-RestMethod` / `Invoke-WebRequest` instead.
 
 Client (Next.js)
+
+From `client/`:
+
+1) Set environment variables
+
+Create a `.env` file in `client/` with:
+
+```
+NEXT_PUBLIC_API_URL=http://localhost:4000
+NEXT_PUBLIC_WS_URL=ws://localhost:4000
+```
+
+
+2) Install dependencies
+
+```powershell
+cd client
+pnpm install
+```
+
+3) Run the API
 
 From `client/`:
 
