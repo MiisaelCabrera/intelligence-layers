@@ -1,7 +1,15 @@
 import { broadcastTampingInfo } from "../lib/websocket";
+import { intervalForSpeed } from "./utils";
 
 const API_URL = process.env.API_URL ?? "http://localhost:4000";
-const INTERVAL_MS = Number(process.env.TAMPING_DATA_FETCHER_INTERVAL_MS ?? "2000");
+const ANALYSIS_SPEED_KMH = Number(process.env.ANALYSIS_SPEED_KMH ?? "2");
+const TAMPING_SPEED_KMH = Number(
+  process.env.TAMPING_SPEED_KMH ?? Math.min(ANALYSIS_SPEED_KMH, 1.8)
+);
+const INTERVAL_MS = Number(
+  process.env.TAMPING_DATA_FETCHER_INTERVAL_MS ??
+    intervalForSpeed(Math.min(TAMPING_SPEED_KMH, ANALYSIS_SPEED_KMH), 2000)
+);
 
 export async function startTampingSimulator() {
   let counter = 1;
