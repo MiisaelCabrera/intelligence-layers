@@ -1,15 +1,7 @@
 import { broadcastTampingInfo } from "../lib/websocket";
-import { intervalForSpeed } from "./utils";
+import { getTampingIntervalMs } from "./simulation-speed";
 
 const API_URL = process.env.API_URL ?? "http://localhost:4000";
-const ANALYSIS_SPEED_KMH = Number(process.env.ANALYSIS_SPEED_KMH ?? "2");
-const TAMPING_SPEED_KMH = Number(
-  process.env.TAMPING_SPEED_KMH ?? Math.min(ANALYSIS_SPEED_KMH, 1.8)
-);
-const INTERVAL_MS = Number(
-  process.env.TAMPING_DATA_FETCHER_INTERVAL_MS ??
-    intervalForSpeed(Math.min(TAMPING_SPEED_KMH, ANALYSIS_SPEED_KMH), 2000)
-);
 
 export async function startTampingSimulator() {
   let counter = 1;
@@ -68,7 +60,7 @@ export async function startTampingSimulator() {
       console.error("[tamping-sim] request error", error);
     } finally {
       counter += 1;
-      setTimeout(loop, INTERVAL_MS);
+      setTimeout(loop, getTampingIntervalMs());
     }
   };
 

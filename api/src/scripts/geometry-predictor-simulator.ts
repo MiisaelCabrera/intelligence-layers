@@ -1,10 +1,6 @@
-import { intervalForSpeed } from "./utils";
+import { getAnalysisIntervalMs } from "./simulation-speed";
 
 const API_URL = process.env.API_URL ?? "http://localhost:4000";
-const ANALYSIS_SPEED_KMH = Number(process.env.ANALYSIS_SPEED_KMH ?? "2");
-const INTERVAL_MS = Number(
-  process.env.GEOMETRY_INTERVAL_MS ?? intervalForSpeed(ANALYSIS_SPEED_KMH, 2000)
-);
 
 const randomFloat = (min: number, max: number) => {
   return Math.random() * (max - min) + min;
@@ -51,7 +47,7 @@ export async function startGeometryPredictorSimulator() {
       console.error("Geometry predictor simulator request error", error);
     } finally {
       counter += 1;
-      setTimeout(loop, INTERVAL_MS);
+      setTimeout(loop, getAnalysisIntervalMs());
     }
   };
 

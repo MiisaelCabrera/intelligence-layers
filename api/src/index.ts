@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import pointsRouter from "./api/points/points.contract";
 import usersRouter from "./api/users/users.contract";
 import configRouter from "./api/config/config.contract";
+import speedRouter from "./api/speed/speed.contract";
 import { seed } from "./lib/seed";
 import { WebSocketServer } from "ws";
 import { startLidarSimulator } from "./scripts/lidar-simulator";
@@ -52,6 +53,7 @@ app.use(express.json());
 app.use("/api/points", pointsRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/configs", configRouter);
+app.use("/api/speed", speedRouter);
 app.use("/api/tamping", tampingRouter);
 
 app.get("/api/hello", (_req: Request, res: Response) => {

@@ -47,6 +47,7 @@ interface TampingBroadcastPayload {
   fallback?: boolean;
   vector?: number[];
   snapshot?: string;
+  suggestedSpeedKmh?: number;
   timestamp?: string;
 }
 
@@ -58,6 +59,7 @@ export const broadcastTampingDecision = ({
   fallback = false,
   vector = [],
   snapshot,
+  suggestedSpeedKmh,
   timestamp = new Date().toISOString(),
 }: TampingBroadcastPayload) => {
   if (!tampingServer) return;
@@ -71,6 +73,7 @@ export const broadcastTampingDecision = ({
     fallback,
     vector,
     snapshot,
+    suggestedSpeedKmh,
     timestamp,
   });
 

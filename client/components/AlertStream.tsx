@@ -69,6 +69,10 @@ export default function AlertStream() {
     fetchConfig();
   }, []);
 
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const autoScrollRef = useRef(true);
+  const SCROLL_THRESHOLD = 40;
+
   useEffect(() => {
     const socket = new WebSocket(buildWebsocketUrl());
     socketRef.current = socket;
@@ -83,7 +87,7 @@ export default function AlertStream() {
           clientId: createClientId(),
         };
 
-        setEvents((prev) => [entry, ...prev].slice(0, MAX_EVENTS));
+        setEvents((prev) => [...prev, entry].slice(-MAX_EVENTS));
       } catch (error) {
         console.error("Failed to process alert payload", error);
       }
@@ -121,6 +125,21 @@ export default function AlertStream() {
     return event.alert.value <= config.urgentThreshold;
   });
 
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (!container || !autoScrollRef.current) return;
+    container.scrollTop = container.scrollHeight;
+  }, [filteredEvents]);
+
+  const handleScroll = () => {
+    const container = scrollRef.current;
+    if (!container) return;
+
+    const { scrollTop, clientHeight, scrollHeight } = container;
+    const atBottom = scrollTop + clientHeight >= scrollHeight - SCROLL_THRESHOLD;
+    autoScrollRef.current = atBottom;
+  };
+
   return (
     <section className="w-full max-w-2xl mx-auto bg-slate-900 text-slate-100 rounded-lg border border-slate-700 shadow-lg overflow-hidden">
       <header className="px-4 py-3 border-b border-slate-700 bg-slate-800/70">
@@ -139,7 +158,11 @@ export default function AlertStream() {
           )}
         </p>
       </header>
-      <div className="max-h-[32rem] overflow-y-auto divide-y divide-slate-800">
+      <div
+        ref={scrollRef}
+        onScroll={handleScroll}
+        className="h-[32rem] overflow-y-auto divide-y divide-slate-800"
+      >
         {filteredEvents.length === 0 ? (
           <div className="px-4 py-6 text-slate-500 text-sm text-center">
             Waiting for alerts…

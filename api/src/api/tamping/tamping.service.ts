@@ -1,6 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "../../lib/prisma";
 import { broadcastTampingDecision } from "../../lib/websocket";
+import { maybeApplySuggestedSpeed } from "../../scripts/simulation-speed";
 
 const HALT_SERVICE_URL =
   process.env.HALT_SERVICE_URL && process.env.HALT_SERVICE_URL.trim().length > 0
@@ -13,6 +14,7 @@ interface DecisionResponse {
   score: number;
   fallback?: boolean;
   vector?: number[];
+  suggested_speed_kmh?: number;
 }
 
 interface TampingDecisionResult extends DecisionResponse {
@@ -39,6 +41,8 @@ export class TampingService {
 
     await this.logDecision(point?.id ?? null, pt, instructions, decision);
 
+    maybeApplySuggestedSpeed(decision.suggested_speed_kmh);
+
     broadcastTampingDecision({
       sampleId: decision.sample_id,
       pt,
@@ -47,6 +51,7 @@ export class TampingService {
       fallback: decision.fallback ?? false,
       vector: decision.vector ?? [],
       snapshot,
+      suggestedSpeedKmh: decision.suggested_speed_kmh,
     });
 
     return { ...decision, pt, snapshot };

@@ -1,8 +1,10 @@
+
 import AlertStream from "@/components/AlertStream";
 import Scene3D from "@/components/Scene3D";
 import TampingSpeed from "@/components/TampingSpeed";
 import TampingStream from "@/components/TampingStream";
 import ChartsStream from "@/components/ChartsStream";
+import SpeedControl from '@/components/SpeedControl'
 
 export default function HomePage() {
   return (
@@ -14,6 +16,7 @@ export default function HomePage() {
         <AlertStream />
         <TampingStream />
       </div>
+      <SpeedControl />
       <TampingSpeed />
     </main>
   );
