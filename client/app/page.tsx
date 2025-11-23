@@ -52,9 +52,10 @@ export default function HomePage() {
 
               {/* Este div ocupa el alto restante */}
               <div className="w-full flex-1 flex items-center justify-center bg-[#f3f4f6]">
-                <div class="sketchfab-embed-wrapper">
+                <div className="sketchfab-embed-wrapper h-full w-full">
                   {" "}
                   <iframe
+                    className="w-full h-full"
                     title="Tamping Machine"
                     frameborder="0"
                     allowfullscreen
