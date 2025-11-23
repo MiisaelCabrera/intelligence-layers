@@ -1,4 +1,4 @@
-import { Prisma, Status } from "@prisma/client";
+import { Points, Prisma, Status } from "@prisma/client";
 import { prisma } from "../../lib/prisma";
 
 export interface PointAlert {
@@ -32,6 +32,15 @@ export interface UpdatePointInput {
 const toJsonValue = <T>(value?: T[]): Prisma.InputJsonValue => {
   return JSON.parse(JSON.stringify(value ?? [])) as Prisma.InputJsonValue;
 };
+
+const jsonArray = (value: Prisma.JsonValue | null): Prisma.JsonArray => {
+  return Array.isArray(value) ? (value as Prisma.JsonArray) : [];
+};
+
+interface AppendResult {
+  record: Points;
+  created: boolean;
+}
 
 export class PointsService {
   async list() {
@@ -78,5 +87,75 @@ export class PointsService {
 
       throw error;
     }
+  }
+
+  async appendAlert(id: number, pt: number, alerts: PointAlert[]): Promise<AppendResult> {
+    return prisma.$transaction(async (tx) => {
+      const point = await tx.points.findUnique({ where: { id } });
+
+      if (!point) {
+        const record = await tx.points.create({
+          data: {
+            id,
+            pt,
+            alerts: toJsonValue(alerts),
+            instructions: toJsonValue([] as PointInstruction[]),
+            status: Status.IGNORE,
+          },
+        });
+
+        return { record, created: true };
+      }
+
+      const currentAlerts = jsonArray(point.alerts) as unknown as PointAlert[];
+      const mergedAlerts = [...currentAlerts, ...alerts];
+
+      const record = await tx.points.update({
+        where: { id },
+        data: {
+          pt,
+          alerts: toJsonValue(mergedAlerts),
+        },
+      });
+
+      return { record, created: false };
+    });
+  }
+
+  async appendInstruction(
+    id: number,
+    pt: number,
+    instructions: PointInstruction[]
+  ): Promise<AppendResult> {
+    return prisma.$transaction(async (tx) => {
+      const point = await tx.points.findUnique({ where: { id } });
+
+      if (!point) {
+        const record = await tx.points.create({
+          data: {
+            id,
+            pt,
+            alerts: toJsonValue([] as PointAlert[]),
+            instructions: toJsonValue(instructions),
+            status: Status.IGNORE,
+          },
+        });
+
+        return { record, created: true };
+      }
+
+      const currentInstructions = jsonArray(point.instructions) as unknown as PointInstruction[];
+      const mergedInstructions = [...currentInstructions, ...instructions];
+
+      const record = await tx.points.update({
+        where: { id },
+        data: {
+          pt,
+          instructions: toJsonValue(mergedInstructions),
+        },
+      });
+
+      return { record, created: false };
+    });
   }
 }

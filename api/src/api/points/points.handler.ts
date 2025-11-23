@@ -29,6 +29,97 @@ const isPointInstruction = (value: unknown): value is PointInstruction => {
   );
 };
 
+type LabeledValue = { label: string; value: number };
+
+const parseNumeric = (value: unknown): number | null => {
+  const numeric = Number(value);
+  return Number.isFinite(numeric) ? numeric : null;
+};
+
+const normalizeLabeledValue = (candidate: unknown): LabeledValue | null => {
+  if (typeof candidate !== "object" || candidate === null) {
+    return null;
+  }
+
+  const { label, value } = candidate as Record<string, unknown>;
+  if (typeof label !== "string") {
+    return null;
+  }
+
+  const numericValue = Number(value);
+  if (!Number.isFinite(numericValue)) {
+    return null;
+  }
+
+  return { label, value: numericValue };
+};
+
+const toLabeledValueArray = (value: unknown): LabeledValue[] | null => {
+  if (value === undefined || value === null) {
+    return null;
+  }
+
+  if (Array.isArray(value)) {
+    if (value.length === 0) {
+      return [];
+    }
+
+    const parsed = value.map(normalizeLabeledValue);
+    if (parsed.some((item) => item === null)) {
+      return null;
+    }
+
+    return parsed as LabeledValue[];
+  }
+
+  const single = normalizeLabeledValue(value);
+  return single ? [single] : null;
+};
+
+const extractAppendPayload = (
+  body: unknown,
+  keys: string[]
+): LabeledValue[] | null => {
+  if (body === undefined || body === null) {
+    return null;
+  }
+
+  if (Array.isArray(body)) {
+    return toLabeledValueArray(body);
+  }
+
+  if (typeof body === "object") {
+    const obj = body as Record<string, unknown>;
+
+    for (const key of keys) {
+      if (key in obj) {
+        const parsed = extractAppendPayload(obj[key], keys);
+        if (parsed) {
+          return parsed;
+        }
+      }
+    }
+
+    const clone: Record<string, unknown> = { ...obj };
+    delete clone.pt;
+    for (const key of keys) {
+      if (key in clone) {
+        delete clone[key];
+      }
+    }
+
+    return toLabeledValueArray(clone);
+  }
+
+  return toLabeledValueArray(body);
+};
+
+const toPointAlerts = (values: LabeledValue[]): PointAlert[] =>
+  values.map(({ label, value }) => ({ label, value }));
+
+const toPointInstructions = (values: LabeledValue[]): PointInstruction[] =>
+  values.map(({ label, value }) => ({ label, value }));
+
 const normalizeStatus = (value: unknown): PointStatus | undefined => {
   if (value === undefined || value === null) return undefined;
 
@@ -211,6 +302,90 @@ export const updatePointHandler = async (
     }
 
     return res.json(updated);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const appendAlertHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = parseIdParam(req.params.id);
+    if (id === null) {
+      return res.status(400).json({ error: "Invalid point id" });
+    }
+
+    const ptValue = parseNumeric((req.body ?? {}).pt);
+    if (ptValue === null) {
+      return res.status(400).json({ error: "pt must be provided as a number" });
+    }
+
+    const rawAlerts = extractAppendPayload(req.body, [
+      "alerts",
+      "alert",
+      "data",
+      "payload",
+      "values",
+    ]);
+
+    if (!rawAlerts || rawAlerts.length === 0) {
+      return res.status(400).json({ error: "Body must include alert data" });
+    }
+
+    const alerts = toPointAlerts(rawAlerts);
+    const { record, created } = await pointsService.appendAlert(
+      id,
+      ptValue,
+      alerts
+    );
+
+    return res.status(created ? 201 : 200).json(record);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const appendInstructionHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = parseIdParam(req.params.id);
+    if (id === null) {
+      return res.status(400).json({ error: "Invalid point id" });
+    }
+
+    const ptValue = parseNumeric((req.body ?? {}).pt);
+    if (ptValue === null) {
+      return res.status(400).json({ error: "pt must be provided as a number" });
+    }
+
+    const rawInstructions = extractAppendPayload(req.body, [
+      "instructions",
+      "instruction",
+      "data",
+      "payload",
+      "values",
+    ]);
+
+    if (!rawInstructions || rawInstructions.length === 0) {
+      return res
+        .status(400)
+        .json({ error: "Body must include instruction data" });
+    }
+
+    const instructions = toPointInstructions(rawInstructions);
+    const { record, created } = await pointsService.appendInstruction(
+      id,
+      ptValue,
+      instructions
+    );
+
+    return res.status(created ? 201 : 200).json(record);
   } catch (error) {
     next(error);
   }
