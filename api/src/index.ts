@@ -1,3 +1,4 @@
+// src/index.ts
 import express, { Request, Response } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -5,6 +6,8 @@ import pointsRouter from "./api/points/points.contract";
 import usersRouter from "./api/users/users.contract";
 import configRouter from "./api/config/config.contract";
 import { seed } from "./lib/seed";
+import getPointHandler from "./api/points/points.contract";
+import { WebSocketServer } from "ws";
 
 dotenv.config();
 
@@ -25,7 +28,6 @@ app.use(
   cors({
     origin: (origin, callback) => {
       if (!origin) return callback(null, true);
-
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
       } else {
@@ -35,31 +37,40 @@ app.use(
   })
 );
 
-// CORS
-app.use(
-  cors({
-    origin: FRONTEND_URL,
-  })
-);
-
 app.use(express.json());
-
 app.use("/api/points", pointsRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/configs", configRouter);
 
-app.get("/api/hello", (req: Request, res: Response) => {
-  res.json({
-    message: "Hello from Express + TypeScript + Render!",
-  });
+app.get("/api/hello", (_req: Request, res: Response) => {
+  res.json({ message: "Hello from Express + TypeScript + Render!" });
 });
 
 bootstrap()
   .then(() => {
-    app.listen(PORT, () => {
+    const server = app.listen(PORT, () => {
       console.log(` Backend running on port ${PORT}`);
     });
+    const wss = new WebSocketServer({ server });
+
+    wss.on("connection", (ws) => {
+      console.log("New WebSocket client connected");
+
+      const interval = setInterval(async () => {
+        const data = {
+          timestamp: new Date(),
+          message: "Datos enviados desde backend",
+        };
+        ws.send(JSON.stringify(data));
+      }, 1000);
+
+      ws.on("close", () => {
+        console.log("Client disconnected");
+        clearInterval(interval);
+      });
+    });
   })
+
   .catch((error) => {
     console.error("Failed to bootstrap application", error);
     process.exit(1);
