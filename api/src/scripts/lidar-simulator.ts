@@ -9,6 +9,7 @@ export async function startLidarSimulator() {
   let counter = 1;
 
   const loop = async () => {
+    console.log(`LIDAR simulator sending point ${counter / 10}...`);
     const pt = Number((counter / 10).toFixed(1));
     const payload = {
       pt,
@@ -20,12 +21,12 @@ export async function startLidarSimulator() {
 
     try {
       const response = await fetch(`${API_URL}/api/points/instructions`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        });
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
 
       if (!response.ok) {
         const text = await response.text();
