@@ -57,10 +57,6 @@ export default function HomePage() {
                   <iframe
                     className="w-full h-full"
                     title="Tamping Machine"
-                    frameborder="0"
-                    allowfullscreen
-                    mozallowfullscreen="true"
-                    webkitallowfullscreen="true"
                     allow="autoplay; fullscreen; xr-spatial-tracking"
                     xr-spatial-tracking
                     execution-while-out-of-viewport
