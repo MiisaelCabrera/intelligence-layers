@@ -1,171 +1,196 @@
-# Intelligence Layers
+🚉 Intelligence Layers
 
-Monorepo for the Intelligence Layers project. Contains an Express + TypeScript API, a Next.js client, and a small ML service.
+Monorepo for the Intelligence Layers project — containing:
 
-**About**
+🟣 Express + TypeScript API
 
-The Mobility & AI Hackathon — is a cross-cultural event connecting Mexico and Austria. Organized by Your Future Made in Austria, WORK in AUSTRIA, and the Austrian Federal Economic Chamber, hosted at the Instituto Politécnico Nacional (IPN) in Mexico City, this hackathon brings together Mexico's dynamic tech scene with Austrian expertise.
+🟢 Next.js frontend
 
-This repository was used as a playground during the hackathon — a place to prototype mobility-focused ideas, run simulator scripts, and connect backend and frontend components for rapid experimentation focused on Plassed & Theurer challenge.
+🔵 Python ML microservice
 
-Overview
+Built during the Mobility & AI Hackathon connecting Mexico 🇲🇽 and Austria 🇦🇹, hosted at IPN (Mexico City), organized by Your Future Made in Austria, WORK in AUSTRIA, and the Austrian Federal Economic Chamber.
+This repository served as a rapid prototyping environment for mobility-focused solutions addressing the Plasser & Theurer challenge.
 
-Quick start (development)
+📘 Overview
 
-Prerequisites
-- Node.js (v18+ recommended)
-- pnpm
-- PostgreSQL running and accessible (or adjust `DATABASE_URL` to point to your DB)
-- (Optional) Docker & docker-compose if you prefer running services in containers
-- Docker Installed
+This monorepo contains:
 
-To completely set up the project you need to initialize our 3 services (BackEnd, FrontEnd and ML)
+api/          → Express + TypeScript backend
+client/       → Next.js frontend
+ml-service/   → Python ML microservice (Dockerized)
 
-### BackEnd
 
-1) Set environment variables
+To fully run the system in development, you must start all three services.
 
-Create a `.env` file in `api/` with at least:
+🚀 Quick Start (Development)
+🔧 Prerequisites
 
-```
+Ensure the user has:
+
+Node.js v18+
+
+pnpm
+
+PostgreSQL
+
+Docker & docker-compose (optional but recommended)
+
+A running PostgreSQL database or adjust the DATABASE_URL to match your setup
+
+🟣 Backend Setup (API)
+1) Environment Variables
+
+Create a .env file in api/:
+
 DATABASE_URL=postgresql://USER:PASS@HOST:PORT/DATABASE?schema=public
 PORT=4000
 FRONTEND_URL=http://localhost:3000
-```
 
+# Optional simulator envs
+TAMPING_DATA_FETCHER_INTERVAL_MS=1000
+TAMPING_INITIAL_DELAY_SEC=3
+API_URL=http://localhost:4000
 
-You can also set simulator-specific envs:
-- `TAMPING_DATA_FETCHER_INTERVAL_MS` — interval between tamping simulator requests (ms)
-- `TAMPING_INITIAL_DELAY_SEC` — initial delay before the first tamping request (seconds)
-- `API_URL` — base URL the simulators will call (default `http://localhost:4000`)
-
-1) Install dependencies
-
-```powershell
+2) Install Dependencies
 cd api
 pnpm install
-```
 
-3) Generate Prisma client
-
-From `api/` run:
-
-```powershell
+3) Generate Prisma Client
 pnpm exec prisma generate
-```
 
-If Prisma complains about a missing `DATABASE_URL`, temporarily set it inline for the generate command:
 
-```powershell
+If Prisma complains about a missing DATABASE_URL:
+
 $env:DATABASE_URL='postgresql://user:pass@localhost:5432/intelligence_layers?schema=public'; pnpm exec prisma generate
-```
 
-4) Seed the database
+4) Seed the Database
 
-The repo includes a seed script that resets tables and inserts a sample user and config.
+This resets tables and inserts a default user + config.
 
-From `api/` run:
-
-```powershell
 pnpm exec tsx prisma/seed.ts
-```
 
-This will truncate the `points`, `config`, and `users` tables and insert a default config and user.
-
-5) Run the API
-
-From `api/`:
-
-```powershell
+5) Run Backend
 pnpm dev
-```
 
-By default the server runs on `http://localhost:4000`. The Express app mounts the config routes at `/api/configs`.
 
-Useful API endpoints (curl examples)
+Backend runs at:
 
-- List configs
-  - `curl http://localhost:4000/api/configs`
-- Get config by id
-  - `curl http://localhost:4000/api/configs/1`
-- Create config
-  - `curl -X POST -H "Content-Type: application/json" -d "{\"confidenceThreshold\":95,\"urgentThreshold\":70}" http://localhost:4000/api/configs`
-- Upsert config (server uses id=1 internally)
-  - `curl -X POST -H "Content-Type: application/json" -d "{\"confidenceThreshold\":90,\"urgentThreshold\":60}" http://localhost:4000/api/configs/upsert`
-- Update config
-  - `curl -X PUT -H "Content-Type: application/json" -d "{\"urgentThreshold\":80}" http://localhost:4000/api/configs/1`
-- Delete config
-  - `curl -X DELETE http://localhost:4000/api/configs/1`
+http://localhost:4000
 
-PowerShell note: Use `curl.exe` to call the native curl shipped with Windows, or use `Invoke-RestMethod` / `Invoke-WebRequest` instead.
+🔍 Useful API Endpoints
+Action	Endpoint
+List configs	GET /api/configs
+Get config by ID	GET /api/configs/:id
+Create config	POST /api/configs
+Upsert default config	POST /api/configs/upsert
+Update config	PUT /api/configs/:id
+Delete config	DELETE /api/configs/:id
 
-### FrontEnd
+Examples (curl):
 
-From `client/`:
+curl http://localhost:4000/api/configs
 
-1) Set environment variables
+curl -X POST -H "Content-Type: application/json" \
+  -d "{\"confidenceThreshold\":95,\"urgentThreshold\":70}" \
+  http://localhost:4000/api/configs
 
-Create a `.env` file in `client/` with:
+🟢 Frontend Setup (Next.js)
 
-```
+From client/:
+
+1) Environment Variables
+
+Create a .env file:
+
 NEXT_PUBLIC_API_URL=http://localhost:4000
 NEXT_PUBLIC_WS_URL=ws://localhost:4000
-```
 
-
-2) Install dependencies
-
-```powershell
+2) Install Dependencies
 cd client
 pnpm install
-```
 
-3) Run the API
-
-From `client/`:
-
-```powershell
+3) Run Frontend
 pnpm dev
-```
 
-The Next app expects the API to run on the address configured in the `.env` or `next.config.ts` — by default the frontend proxies or calls `http://localhost:4000`.
 
-### ML
+Frontend runs at:
 
-From `ml-service/`:
+http://localhost:3000
 
-1) Run the Machine Learning Service on the terminal
+🔵 ML Service (Python)
 
-```
-docker-compose up --build  
-```
+From ml-service/:
 
-*NOTE:* Once you have all the three services running, you can now watch the application on live by going to the link provided on the front end setup, by default it is usually: http://localhost:3000/
+Start the ML microservice:
 
-Simulators
+docker-compose up --build
 
-On API bootstrap the project starts several simulator scripts that call API endpoints to produce test data and alerts. If your API is not running when the simulators start, you will see connection errors (ECONNREFUSED). To avoid that:
-- Ensure the API server is running before starting simulators, or
-- Disable simulators in `src/index.ts` by commenting out the `start*Simulator()` calls in `bootstrap()`.
 
-Troubleshooting
+It downloads a SentenceTransformer model (all-MiniLM-L6-v2) and exposes an API for inference.
 
-- Error: `Config not found` — seed your DB (see step 4) or create a config with the API before simulators request data.
-- Prisma errors about missing `DATABASE_URL` during `prisma generate` — set `DATABASE_URL` temporarily as shown above.
-- If you change Prisma schema: run `pnpm exec prisma migrate dev` (development) and then `pnpm exec prisma generate`.
+🎛️ Simulators (Optional)
 
-Development tips
+The API launches several simulators on startup.
+If your API is not running when they start, you may see errors like ECONNREFUSED.
 
-- API code lives under `api/src/api/*` (handlers, services, routers).
-- Prisma schema is at `api/prisma/schema.prisma`.
-- Seed logic is in `api/src/lib/seed.ts`.
+To disable simulators:
 
-Next steps / Improvements
+Inside api/src/index.ts, comment out the calls to:
 
-- Add a docker-compose setup that starts Postgres, runs migrations, seeds DB, and starts the API and client.
-- Add tests for API routes and services.
+startTampingSimulator();
+startUrgentSimulator();
+start... (etc)
 
-Appendix
+🧰 Troubleshooting
+❌ Config not found
 
-- Database schema — [DB Docs: Intelligence Layer](https://dbdocs.io/MiisaelCabrera/Intelligence-Layer)
-- Plasser & Theurer — Stopfung (Nivellier / Hebe / Richt / Stopfmaschinen): [https://www.plassertheurer.com/en/machine/technologie/stopfung/ueber-stopfung/schneller-zu-hoeherer-qualitaet-nivellier-hebe-richt-und-stopfmaschinen](https://www.plassertheurer.com/en/machine/technologie/stopfung/ueber-stopfung/schneller-zu-hoeherer-qualitaet-nivellier-hebe-richt-und-stopfmaschinen)
+Run seed: pnpm exec tsx prisma/seed.ts
+
+Or create a config manually using /api/configs/upsert
+
+❌ Prisma: missing DATABASE_URL
+
+Set it inline:
+
+$env:DATABASE_URL='postgresql://...' ; pnpm exec prisma generate
+
+❌ Schema changed?
+
+Run:
+
+pnpm exec prisma migrate dev
+pnpm exec prisma generate
+
+🗂️ Development Notes
+
+API routes: api/src/api/*
+
+Prisma schema: api/prisma/schema.prisma
+
+DB seed logic: api/src/lib/seed.ts
+
+📈 Next Steps / Improvements
+
+Add a full docker-compose that:
+
+Spins up PostgreSQL
+
+Runs migrations
+
+Seeds DB
+
+Starts API + Frontend + ML automatically
+
+Add automated tests for backend routes and services
+
+Add CI/CD for monorepo deployments
+
+📎 Appendix
+📊 Database Schema
+
+DB Docs:
+https://dbdocs.io/MiisaelCabrera/Intelligence-Layer
+
+🛠 Plasser & Theurer — Stopfung (Tamping Technology)
+
+https://www.plassertheurer.com/en/machine/technologie/stopfung/ueber-stopfung/schneller-zu-hoeherer-qualitaet-nivellier-hebe-richt-und-stopfmaschinen
