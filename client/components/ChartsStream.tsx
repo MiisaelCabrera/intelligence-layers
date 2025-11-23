@@ -62,7 +62,7 @@ export default function ChartsStream() {
   const labels = Object.keys(seriesData);
 
   return (
-    <div className="flex flex-wrap w-full mx-auto items-center justify-center col-span-2  gap-4">
+    <div className="grid grid-cols-5 mx-auto items-center justify-center gap-4">
       {labels.map((label, index) => {
         const data = seriesData[label];
         const color = COLORS[index % COLORS.length]; // ciclo de colores

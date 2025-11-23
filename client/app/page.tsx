@@ -47,8 +47,7 @@ export default function HomePage() {
             <span>Realtime · 3D</span>
           </div>
 
-          <div className="w-full aspect-[16/8] md:aspect-[16/7] bg-[#f3f4f6]">
-          </div>
+          <div className="w-full aspect-[16/8] md:aspect-[16/7] bg-[#f3f4f6]"></div>
         </div>
       </section>
 
@@ -60,14 +59,16 @@ export default function HomePage() {
           </h2>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="rounded-3xl border border-[#e5e7eb] bg-white p-6 shadow-[0_16px_30px_rgba(15,23,42,0.06)]">
-              <ChartsStream />
-            </div>
+            <div className="rounded-3xl border border-[#e5e7eb] bg-white p-6 shadow-[0_16px_30px_rgba(15,23,42,0.06)]"></div>
             <div className="rounded-3xl border border-[#e5e7eb] bg-white p-6 shadow-[0_16px_30px_rgba(15,23,42,0.06)]">
               <TampingStream />
             </div>
           </div>
         </div>
+      </section>
+
+      <section>
+        <ChartsStream />
       </section>
 
       {/* CONTROLS & SPEED */}
