@@ -81,3 +81,33 @@ export const broadcastTampingDecision = ({
   });
 };
 
+interface TampingInfoPayload {
+  pt: number;
+  textPoints: string;
+  textConfig: string;
+  timestamp?: string;
+}
+
+export const broadcastTampingInfo = ({
+  pt,
+  textPoints,
+  textConfig,
+  timestamp = new Date().toISOString(),
+}: TampingInfoPayload) => {
+  if (!tampingServer) return;
+
+  const payload = JSON.stringify({
+    type: "tamping-info",
+    pt,
+    textPoints,
+    textConfig,
+    timestamp,
+  });
+
+  tampingServer.clients.forEach((client) => {
+    if (client.readyState === client.OPEN) {
+      client.send(payload);
+    }
+  });
+};
+
