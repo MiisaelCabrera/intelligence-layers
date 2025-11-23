@@ -1,11 +1,17 @@
-/**
- * Handler for sensors operations
- */
+import { NextFunction, Request, Response } from "express";
+import { SensorsService } from "./sensors.service";
 
-// export class SensorsHandler {
-//     constructor() {}
+const sensorsService = new SensorsService();
 
-//     async getSensors() {
-//         return [];
-//     }
-// }
+export const listSensorsHandler = async (
+  _req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const sensors = await sensorsService.list();
+    res.json(sensors);
+  } catch (error) {
+    next(error);
+  }
+};

@@ -1,11 +1,8 @@
-/**
- * Contract for points operations
- */
+import { Router } from "express";
+import { listPointsHandler } from "./points.handler";
 
-// export interface Point {
-//     id: string;
-//     name: string;
-//     description: string;
-//     createdAt: Date;
-//     updatedAt: Date;
-// }
+export const pointsRouter = Router();
+
+pointsRouter.get("/", listPointsHandler);
+
+export default pointsRouter;

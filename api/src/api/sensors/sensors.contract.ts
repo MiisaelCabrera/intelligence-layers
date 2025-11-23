@@ -1,11 +1,8 @@
-/**
- * Contract for sensors operations
- */
+import { Router } from "express";
+import { listSensorsHandler } from "./sensors.handler";
 
-// export interface Sensor {
-//     id: string;
-//     name: string;
-//     description: string;
-//     createdAt: Date;
-//     updatedAt: Date;
-// }
+export const sensorsRouter = Router();
+
+sensorsRouter.get("/", listSensorsHandler);
+
+export default sensorsRouter;
