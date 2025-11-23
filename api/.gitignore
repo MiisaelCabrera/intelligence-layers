@@ -57,3 +57,5 @@ jest*
 # Optional: Debug
 *.swp
 *.swo
+
+/src/generated/prisma
