@@ -224,7 +224,3 @@ https://dbdocs.io/MiisaelCabrera/Intelligence-Layer
 🛠 Plasser & Theurer — Stopfung (Tamping Technology)
 
 https://www.plassertheurer.com/en/machine/technologie/stopfung/ueber-stopfung/schneller-zu-hoeherer-qualitaet-nivellier-hebe-richt-und-stopfmaschinen
-
-🗺 System Architecture Diagram (Excalidraw)
-
-https://app.excalidraw.com/l/6L0qfneh8EM/7pEr1mbAWuu
