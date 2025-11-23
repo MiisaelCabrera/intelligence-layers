@@ -1,5 +1,4 @@
-import { Prisma } from "@prisma/client";
-import { prisma } from "../../lib/prisma";
+import { supabase } from "../../lib/supabase";
 
 export interface CreateConfigInput {
   confidenceThreshold: number;
@@ -13,73 +12,70 @@ export interface UpdateConfigInput {
 
 export class ConfigService {
   async list() {
-    return prisma.config.findMany();
+    const { data, error } = await supabase.from("Config").select("*");
+    if (error) throw error;
+    return data;
   }
 
   async get(id: number) {
-    return prisma.config.findUnique({ where: { id } });
+    const { data, error } = await supabase.from("Config").select("*").eq("id", id).maybeSingle();
+    if (error) throw error;
+    return data;
   }
 
   async create(input: CreateConfigInput) {
-    return prisma.config.create({
-      data: {
-        confidenceThreshold: input.confidenceThreshold,
-        urgentThreshold: input.urgentThreshold,
-      },
-    });
+    const { data, error } = await supabase
+      .from("Config")
+      .insert([
+        {
+          confidenceThreshold: input.confidenceThreshold,
+          urgentThreshold: input.urgentThreshold,
+        },
+      ])
+      .select()
+      .maybeSingle();
+
+    if (error) throw error;
+    return data;
   }
 
   async upsert(input: CreateConfigInput) {
-    return prisma.config.upsert({
-      where: { id: 1 },
-      update: {
-        confidenceThreshold: input.confidenceThreshold,
-        urgentThreshold: input.urgentThreshold,
-      },
-      create: {
-        confidenceThreshold: input.confidenceThreshold,
-        urgentThreshold: input.urgentThreshold,
-      },
-    });
+    const { data, error } = await supabase
+      .from("Config")
+      .upsert([
+        { id: 1, confidenceThreshold: input.confidenceThreshold, urgentThreshold: input.urgentThreshold },
+      ])
+      .select()
+      .maybeSingle();
+
+    if (error) throw error;
+    return data;
   }
 
   async update(id: number, input: UpdateConfigInput) {
-    try {
-      return await prisma.config.update({
-        where: { id },
-        data: {
-          ...(input.confidenceThreshold !== undefined
-            ? { confidenceThreshold: input.confidenceThreshold }
-            : {}),
-          ...(input.urgentThreshold !== undefined
-            ? { urgentThreshold: input.urgentThreshold }
-            : {}),
-        },
-      });
-    } catch (error: unknown) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === "P2025"
-      ) {
-        return null;
-      }
+    const updateData: any = {
+      ...(input.confidenceThreshold !== undefined
+        ? { confidenceThreshold: input.confidenceThreshold }
+        : {}),
+      ...(input.urgentThreshold !== undefined
+        ? { urgentThreshold: input.urgentThreshold }
+        : {}),
+    };
 
-      throw error;
-    }
+    const { data, error } = await supabase
+      .from("Config")
+      .update(updateData)
+      .eq("id", id)
+      .select()
+      .maybeSingle();
+
+    if (error) throw error;
+    return data ?? null;
   }
 
   async delete(id: number) {
-    try {
-      return await prisma.config.delete({ where: { id } });
-    } catch (error: unknown) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === "P2025"
-      ) {
-        return null;
-      }
-
-      throw error;
-    }
+    const { data, error } = await supabase.from("Config").delete().eq("id", id).select().maybeSingle();
+    if (error) throw error;
+    return data ?? null;
   }
 }

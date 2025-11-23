@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import pointsRouter from "./api/points/points.contract";
 import usersRouter from "./api/users/users.contract";
 import configRouter from "./api/config/config.contract";
-import { seed } from "./lib/seed";
+
 
 dotenv.config();
 
@@ -17,7 +17,6 @@ const allowedOrigins = [FRONTEND_URL, "localhost:3000"];
 
 const bootstrap = async () => {
   if (process.env.NODE_ENV !== "production") {
-    await seed();
   }
 };
 

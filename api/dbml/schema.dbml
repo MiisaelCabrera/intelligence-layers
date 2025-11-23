@@ -2,9 +2,9 @@
 //// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 //// ------------------------------------------------------
 
-Project "Intelligence Layer" {
+Project "MiProyecto" {
   database_type: 'PostgreSQL'
-  Note: 'Description'
+  Note: 'Descripción de mi proyecto'
 }
 
 Table Users {

@@ -1,5 +1,4 @@
-import { Prisma } from "@prisma/client";
-import { prisma } from "../../lib/prisma";
+import { supabase } from "../../lib/supabase";
 
 export interface CreateUserInput {
   email: string;
@@ -14,71 +13,63 @@ export interface UpdateUserInput {
 
 export class UsersService {
   async list() {
-    return prisma.users.findMany();
+    const { data, error } = await supabase.from("Users").select("*");
+    if (error) throw error;
+    return data;
   }
 
   async get(email: string) {
-    return prisma.users.findUnique({ where: { email } });
+    const { data, error } = await supabase.from("Users").select("*").eq("email", email).maybeSingle();
+    if (error) throw error;
+    return data;
   }
 
   async create(input: CreateUserInput) {
-    return prisma.users.create({
-      data: {
-        email: input.email,
-        name: input.name,
-        password: input.password,
-      },
-    });
+    const { data, error } = await supabase
+      .from("Users")
+      .insert([
+        { email: input.email, name: input.name, password: input.password },
+      ])
+      .select()
+      .maybeSingle();
+
+    if (error) throw error;
+    return data;
   }
 
   async upsert(input: CreateUserInput) {
-    return prisma.users.upsert({
-      where: { email: input.email },
-      update: {
-        name: input.name,
-        password: input.password,
-      },
-      create: {
-        email: input.email,
-        name: input.name,
-        password: input.password,
-      },
-    });
+    const { data, error } = await supabase
+      .from("Users")
+      .upsert([
+        { email: input.email, name: input.name, password: input.password },
+      ])
+      .select()
+      .maybeSingle();
+
+    if (error) throw error;
+    return data;
   }
 
   async update(email: string, input: UpdateUserInput) {
-    try {
-      return await prisma.users.update({
-        where: { email },
-        data: {
-          ...(input.name !== undefined ? { name: input.name } : {}),
-          ...(input.password !== undefined ? { password: input.password } : {}),
-        },
-      });
-    } catch (error: unknown) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === "P2025"
-      ) {
-        return null;
-      }
+    const updateData: any = {
+      ...(input.name !== undefined ? { name: input.name } : {}),
+      ...(input.password !== undefined ? { password: input.password } : {}),
+    };
 
-      throw error;
-    }
+    const { data, error } = await supabase
+      .from("Users")
+      .update(updateData)
+      .eq("email", email)
+      .select()
+      .maybeSingle();
+
+    if (error) throw error;
+    return data ?? null;
   }
 
   async delete(email: string) {
-    try {
-      return await prisma.users.delete({ where: { email } });
-    } catch (error: unknown) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === "P2025"
-      ) {
-        return null;
-      }
-
-      throw error;
-    }
+    const { data, error } = await supabase.from("Users").delete().eq("email", email).select().maybeSingle();
+    if (error) throw error;
+    return data ?? null;
   }
 }

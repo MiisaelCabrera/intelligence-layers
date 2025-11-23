@@ -1,5 +1,4 @@
-import { Points, Prisma, Status } from "@prisma/client";
-import { prisma } from "../../lib/prisma";
+import { supabase } from "../../lib/supabase";
 
 export interface PointAlert {
   label: string;
@@ -11,7 +10,7 @@ export interface PointInstruction {
   value: number;
 }
 
-export type PointStatus = Status;
+export type PointStatus = "IGNORE" | "PROCEED";
 
 export const VALID_POINT_STATUSES: PointStatus[] = ["IGNORE", "PROCEED"];
 
@@ -29,97 +28,114 @@ export interface UpdatePointInput {
   status?: PointStatus;
 }
 
-const toJsonValue = <T>(value?: T[]): Prisma.InputJsonValue => {
-  return JSON.parse(JSON.stringify(value ?? [])) as Prisma.InputJsonValue;
+const toJsonValue = <T>(value?: T[]): unknown => {
+  return value ?? [];
 };
 
-const jsonArray = (value: Prisma.JsonValue | null): Prisma.JsonArray => {
-  return Array.isArray(value) ? (value as Prisma.JsonArray) : [];
+const jsonArray = (value: unknown | null): unknown[] => {
+  return Array.isArray(value) ? (value as unknown[]) : [];
 };
+
+export interface PointRecord {
+  id: number;
+  pt: number;
+  alerts: unknown[];
+  instructions: unknown[];
+  status: PointStatus;
+}
 
 interface AppendResult {
-  record: Points;
+  record: PointRecord | null;
   created: boolean;
 }
 
 export class PointsService {
   async list() {
-    return prisma.points.findMany();
+    const { data, error } = await supabase.from("Points").select("*");
+    if (error) throw error;
+    return data;
   }
 
   async get(id: number) {
-    return prisma.points.findUnique({ where: { id } });
+    const { data, error } = await supabase.from("Points").select("*").eq("id", id).maybeSingle();
+    if (error) throw error;
+    return data;
   }
 
   async create(input: CreatePointInput) {
-    return prisma.points.create({
-      data: {
-        pt: input.pt,
-        alerts: toJsonValue(input.alerts),
-        instructions: toJsonValue(input.instructions),
-        status: input.status ?? Status.IGNORE,
-      },
-    });
+    const { data, error } = await supabase
+      .from("Points")
+      .insert([
+        {
+          pt: input.pt,
+          alerts: toJsonValue(input.alerts),
+          instructions: toJsonValue(input.instructions),
+          status: input.status ?? "IGNORE",
+        },
+      ])
+      .select()
+      .maybeSingle();
+
+    if (error) throw error;
+    return data;
   }
 
   async update(id: number, input: UpdatePointInput) {
-    try {
-      return await prisma.points.update({
-        where: { id },
-        data: {
-          ...(input.pt !== undefined ? { pt: input.pt } : {}),
-          ...(input.alerts !== undefined
-            ? { alerts: toJsonValue(input.alerts) }
-            : {}),
-          ...(input.instructions !== undefined
-            ? { instructions: toJsonValue(input.instructions) }
-            : {}),
-          ...(input.status !== undefined ? { status: input.status } : {}),
-        },
-      });
-    } catch (error: unknown) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === "P2025"
-      ) {
-        return null;
-      }
+    const updateData: any = {
+      ...(input.pt !== undefined ? { pt: input.pt } : {}),
+      ...(input.alerts !== undefined ? { alerts: toJsonValue(input.alerts) } : {}),
+      ...(input.instructions !== undefined
+        ? { instructions: toJsonValue(input.instructions) }
+        : {}),
+      ...(input.status !== undefined ? { status: input.status } : {}),
+    };
 
-      throw error;
-    }
+    const { data, error } = await supabase
+      .from("Points")
+      .update(updateData)
+      .eq("id", id)
+      .select()
+      .maybeSingle();
+
+    if (error) throw error;
+    return data ?? null;
   }
 
   async appendAlert(id: number, pt: number, alerts: PointAlert[]): Promise<AppendResult> {
-    return prisma.$transaction(async (tx) => {
-      const point = await tx.points.findUnique({ where: { id } });
+    const { data: point, error } = await supabase.from("Points").select("*").eq("id", id).maybeSingle();
+    if (error) throw error;
 
-      if (!point) {
-        const record = await tx.points.create({
-          data: {
+    if (!point) {
+      const { data, error: insError } = await supabase
+        .from("Points")
+        .insert([
+          {
             id,
             pt,
             alerts: toJsonValue(alerts),
             instructions: toJsonValue([] as PointInstruction[]),
-            status: Status.IGNORE,
+            status: "IGNORE",
           },
-        });
+        ])
+        .select()
+        .maybeSingle();
 
-        return { record, created: true };
-      }
+      if (insError) throw insError;
+      return { record: data, created: true } as AppendResult;
+    }
 
-      const currentAlerts = jsonArray(point.alerts) as unknown as PointAlert[];
-      const mergedAlerts = [...currentAlerts, ...alerts];
+    const currentAlerts = jsonArray(point.alerts) as unknown as PointAlert[];
+    const mergedAlerts = [...currentAlerts, ...alerts];
 
-      const record = await tx.points.update({
-        where: { id },
-        data: {
-          pt,
-          alerts: toJsonValue(mergedAlerts),
-        },
-      });
+    const { data: record, error: upError } = await supabase
+      .from("Points")
+      .update({ pt, alerts: toJsonValue(mergedAlerts) })
+      .eq("id", id)
+      .select()
+      .maybeSingle();
 
-      return { record, created: false };
-    });
+    if (upError) throw upError;
+    return { record, created: false } as AppendResult;
   }
 
   async appendInstruction(
@@ -127,35 +143,39 @@ export class PointsService {
     pt: number,
     instructions: PointInstruction[]
   ): Promise<AppendResult> {
-    return prisma.$transaction(async (tx) => {
-      const point = await tx.points.findUnique({ where: { id } });
+    const { data: point, error } = await supabase.from("Points").select("*").eq("id", id).maybeSingle();
+    if (error) throw error;
 
-      if (!point) {
-        const record = await tx.points.create({
-          data: {
+    if (!point) {
+      const { data, error: insError } = await supabase
+        .from("Points")
+        .insert([
+          {
             id,
             pt,
             alerts: toJsonValue([] as PointAlert[]),
             instructions: toJsonValue(instructions),
-            status: Status.IGNORE,
+            status: "IGNORE",
           },
-        });
+        ])
+        .select()
+        .maybeSingle();
 
-        return { record, created: true };
-      }
+      if (insError) throw insError;
+      return { record: data, created: true } as AppendResult;
+    }
 
-      const currentInstructions = jsonArray(point.instructions) as unknown as PointInstruction[];
-      const mergedInstructions = [...currentInstructions, ...instructions];
+    const currentInstructions = jsonArray(point.instructions) as unknown as PointInstruction[];
+    const mergedInstructions = [...currentInstructions, ...instructions];
 
-      const record = await tx.points.update({
-        where: { id },
-        data: {
-          pt,
-          instructions: toJsonValue(mergedInstructions),
-        },
-      });
+    const { data: record, error: upError } = await supabase
+      .from("Points")
+      .update({ pt, instructions: toJsonValue(mergedInstructions) })
+      .eq("id", id)
+      .select()
+      .maybeSingle();
 
-      return { record, created: false };
-    });
+    if (upError) throw upError;
+    return { record, created: false } as AppendResult;
   }
 }
