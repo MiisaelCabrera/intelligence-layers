@@ -13,6 +13,15 @@ datasource db {
   provider = "postgresql"
 }
 
+generator dbml {
+  provider            = "prisma-dbml-generator"
+  output              = "../dbml"
+  outputName          = "schema.dbml"
+  projectName         = "MiProyecto"
+  projectDatabaseType = "PostgreSQL"
+  projectNote         = "Descripción de mi proyecto"
+}
+
 enum Status {
   IGNORE
   PROCEED
