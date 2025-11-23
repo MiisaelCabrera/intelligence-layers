@@ -9,7 +9,6 @@ export async function startLidarSimulator() {
   let counter = 1;
 
   const loop = async () => {
-    console.log(`LIDAR simulator sending point ${counter / 10}...`);
     const pt = Number((counter / 10).toFixed(1));
     const payload = {
       pt,

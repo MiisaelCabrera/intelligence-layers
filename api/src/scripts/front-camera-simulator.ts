@@ -15,7 +15,7 @@ export async function startFrontCameraSimulator() {
       alerts: [
         {
           label: "frontFacingCamera",
-          value: Number(randomFloat(70, 98).toFixed(2)),
+          value: Number(randomFloat(93, 98).toFixed(2)),
         },
       ],
     };
