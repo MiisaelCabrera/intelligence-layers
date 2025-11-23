@@ -10,69 +10,102 @@ interface DataPoint {
   y: number;
 }
 
-export default function RealTimeAreaChart() {
-  const [data, setData] = useState<DataPoint[]>([]);
-  const seriesRef = useRef<{ data: DataPoint[] }>({ data: [] });
+interface SeriesData {
+  [label: string]: DataPoint[];
+}
 
-  const generateRandomPoint = () => {
-    const timestamp = new Date().getTime();
-    const value = Math.random() * 2;
-    return { x: timestamp, y: value };
-  };
+// Colores predefinidos para cada serie
+const COLORS = [
+  "#008FFB",
+  "#00E396",
+  "#FEB019",
+  "#FF4560",
+  "#775DD0",
+  "#3F51B5",
+  "#546E7A",
+  "#D4526E",
+  "#8D5B4C",
+  "#F86624",
+];
+
+export default function RealTimeCharts() {
+  const [seriesData, setSeriesData] = useState<SeriesData>({});
+  const seriesRef = useRef<SeriesData>({});
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      const newPoint = generateRandomPoint();
-      seriesRef.current.data = [...seriesRef.current.data, newPoint];
+    const ws = new WebSocket(
+      (process.env.NEXT_PUBLIC_WS_URL ?? "ws://localhost:4000") + "/ws/alerts"
+    );
 
-      if (seriesRef.current.data.length > 30) {
-        seriesRef.current.data.shift();
+    ws.onmessage = (event) => {
+      const parsed = JSON.parse(event.data);
+      const label = parsed.alert?.label || parsed.label;
+      if (!label) return;
+
+      const timestamp = new Date().getTime();
+      const value = parsed.alert?.value ?? 0;
+
+      if (!seriesRef.current[label]) seriesRef.current[label] = [];
+
+      seriesRef.current[label].push({ x: timestamp, y: value });
+
+      if (seriesRef.current[label].length > 30) {
+        seriesRef.current[label].shift();
       }
 
-      setData([...seriesRef.current.data]);
-    }, 1000);
+      setSeriesData({ ...seriesRef.current });
+    };
 
-    return () => clearInterval(interval);
+    return () => ws.close();
   }, []);
 
-  const options: ApexOptions = {
-    chart: {
-      id: "realtime",
-      type: "area",
-      animations: {
-        enabled: true,
-        dynamicAnimation: {
-          enabled: true,
-          speed: 1000, // velocidad de animación en ms
-        },
-      },
-      toolbar: { show: false },
-      zoom: { enabled: false },
-    },
-    stroke: { curve: "smooth" },
-    xaxis: {
-      type: "datetime",
-      labels: { datetimeUTC: false },
-      max: new Date().getTime(),
-      tickAmount: 0,
-    },
-    yaxis: { max: 10, decimalsInFloat: 2 },
-    fill: {
-      type: "gradient",
-      colors: ["#008FFB"],
-      gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0 },
-    },
-    dataLabels: { enabled: false },
-  };
+  const labels = Object.keys(seriesData);
 
   return (
-    <div className="w-1/3 h-32">
-      <Chart
-        options={options}
-        series={[{ name: "Valor", data }]}
-        type="area"
-        height={250}
-      />
+    <div className="flex flex-wrap gap-4">
+      {labels.map((label, index) => {
+        const data = seriesData[label];
+        const color = COLORS[index % COLORS.length]; // ciclo de colores
+
+        const options: ApexOptions = {
+          chart: {
+            id: label,
+            type: "area",
+            animations: {
+              enabled: true,
+              dynamicAnimation: { enabled: true, speed: 1000 },
+            },
+            toolbar: { show: false },
+            zoom: { enabled: false },
+          },
+          stroke: { curve: "smooth" },
+          xaxis: {
+            type: "datetime",
+            labels: { datetimeUTC: false },
+            title: { text: "Fecha" },
+          },
+          yaxis: { title: { text: "value" } },
+          fill: {
+            type: "gradient",
+            colors: [color],
+            gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0 },
+          },
+          dataLabels: { enabled: false },
+          title: { text: label },
+          tooltip: { x: { format: "HH:mm:ss" } },
+        };
+
+        return (
+          <div key={label} className="w-1/3 h-64">
+            <Chart
+              options={options}
+              series={[{ name: label, data }]}
+              type="area"
+              height={250}
+            />
+          </div>
+        );
+      })}
     </div>
   );
 }
