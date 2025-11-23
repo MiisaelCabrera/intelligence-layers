@@ -10,6 +10,7 @@ import getPointHandler from "./api/points/points.contract";
 import { prisma } from "./lib/prisma";
 import { WebSocketServer } from "ws";
 import { startLidarSimulator } from "./scripts/lidar-simulator";
+import { startGprSimulator } from "./scripts/gpr-simulator";
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ const bootstrap = async () => {
   if (process.env.NODE_ENV !== "production") {
     await seed();
     startLidarSimulator();
+    startGprSimulator();
   }
 };
 
