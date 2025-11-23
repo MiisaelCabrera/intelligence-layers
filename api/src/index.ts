@@ -1,6 +1,8 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import pointsRouter from "./api/points/points.contract";
+import sensorsRouter from "./api/sensors/sensors.contract";
 
 dotenv.config();
 
@@ -33,6 +35,9 @@ app.use(
 );
 
 app.use(express.json());
+
+app.use("/api/points", pointsRouter);
+app.use("/api/sensors", sensorsRouter);
 
 app.get("/api/hello", (req: Request, res: Response) => {
   res.json({
