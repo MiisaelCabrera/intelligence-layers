@@ -1,3 +1,5 @@
+import { text } from "stream/consumers";
+
 const API_URL = process.env.API_URL ?? "http://localhost:4000";
 const INTERVAL_MS = Number(process.env.TAMPING_DATA_FETCHER_INTERVAL_MS ?? "1800");
 
@@ -16,7 +18,15 @@ export async function startTampingSimulator() {
         },
         body: JSON.stringify({ pt }),
       });
-
+        const responseConfig = await fetch(`${API_URL}/api/configs/`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+    const textPoints = await response.text();
+    const textConfig = await responseConfig.text();
+    console.log(`Tamping Information and Metrics: ${textPoints} ${textConfig}`);
       if (!response.ok) {
         const text = await response.text();
         console.error(
@@ -36,5 +46,6 @@ export async function startTampingSimulator() {
     }
   };
 
-  loop();
+  const INITIAL_DELAY_SEC = Number(process.env.TAMPING_INITIAL_DELAY_SEC ?? "2");
+  setTimeout(loop, INITIAL_DELAY_SEC * 1000);
 }
