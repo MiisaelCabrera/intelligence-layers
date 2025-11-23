@@ -1,0 +1,10 @@
+services:
+  halt-service:
+    build: .
+    container_name: intelligence-layers-halt-service
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+
