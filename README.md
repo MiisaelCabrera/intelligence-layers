@@ -2,11 +2,13 @@
 
 Monorepo for the Intelligence Layers project. Contains an Express + TypeScript API, a Next.js client, and a small ML service.
 
+**About**
+
+The Mobility & AI Hackathon — is a cross-cultural event connecting Mexico and Austria. Organized by Your Future Made in Austria, WORK in AUSTRIA, and the Austrian Federal Economic Chamber, hosted at the Instituto Politécnico Nacional (IPN) in Mexico City, this hackathon brings together Mexico's dynamic tech scene with Austrian expertise.
+
+This repository was used as a playground during the hackathon — a place to prototype mobility-focused ideas, run simulator scripts, and connect backend and frontend components for rapid experimentation focused on Plassed & Theurer challenge.
+
 Overview
-- `api/` — Express API using TypeScript and Prisma (PostgreSQL). Includes simulator scripts for LIDAR, GPR, front camera, geometry predictor, tamping executable and a config-setter simulator.
-- `client/` — Next.js frontend app.
-- `ml-service/` — Python service (Dockerized) for ML tasks.
-- `docker/` — docker-compose helpers.
 
 Quick start (development)
 
