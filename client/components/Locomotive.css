@@ -1,0 +1,55 @@
+.train-track {
+  width: 100%;
+  height: 150px;
+  overflow: hidden;
+  background: linear-gradient(to top, #87ceeb 0%, #ffffff 100%);
+  position: relative;
+}
+
+.train {
+  display: flex;
+  align-items: flex-end;
+  position: absolute;
+  left: -200px; /* empieza fuera de la pantalla */
+  animation: moveTrain 8s linear infinite;
+}
+
+.engine {
+  width: 80px;
+  height: 60px;
+  background: red;
+  border-radius: 10px;
+  position: relative;
+  margin-right: 10px;
+}
+
+.smoke {
+  width: 10px;
+  height: 10px;
+  background: gray;
+  border-radius: 50%;
+  position: absolute;
+  top: -15px;
+  left: 10px;
+  animation: smoke 1s ease-in-out infinite alternate;
+}
+
+.wagon {
+  width: 60px;
+  height: 50px;
+  background: blue;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+
+/* Animación de locomotora moviéndose */
+@keyframes moveTrain {
+  0% { left: -200px; }
+  100% { left: 100%; }
+}
+
+/* Animación de humo */
+@keyframes smoke {
+  0% { transform: translateY(0) scale(1); opacity: 0.8; }
+  100% { transform: translateY(-20px) scale(1.5); opacity: 0; }
+}
