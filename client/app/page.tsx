@@ -1,6 +1,5 @@
 import Image from "next/image";
 import AlertStream from "@/components/AlertStream";
-import RailsScene from "@/components/RailsScene";
 import TampingSpeed from "@/components/TampingSpeed";
 import TampingStream from "@/components/TampingStream";
 import ChartsStream from "@/components/ChartsStream";
@@ -49,7 +48,6 @@ export default function HomePage() {
           </div>
 
           <div className="w-full aspect-[16/8] md:aspect-[16/7] bg-[#f3f4f6]">
-            <RailsScene />
           </div>
         </div>
       </section>
