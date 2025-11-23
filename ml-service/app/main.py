@@ -36,6 +36,7 @@ class DecisionResponse(BaseModel):
   decision: str
   score: float
   fallback: bool = False
+  vector: List[float] | None = None
 
 
 class FeedbackRequest(BaseModel):
@@ -139,6 +140,7 @@ async def decision(request: DecisionRequest) -> DecisionResponse:
     decision=decision_label,
     score=score,
     fallback=not model.has_trained,
+    vector=vector,
   )
 
 

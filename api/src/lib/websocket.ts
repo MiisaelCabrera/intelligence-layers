@@ -40,34 +40,43 @@ export const broadcastAlert = ({
 };
 
 interface TampingBroadcastPayload {
+  sampleId: string;
   pt: number;
   decision: "PROCEED" | "IGNORE";
   score: number;
   fallback?: boolean;
+  vector?: number[];
+  snapshot?: string;
   timestamp?: string;
 }
 
 export const broadcastTampingDecision = ({
+  sampleId,
   pt,
   decision,
   score,
   fallback = false,
+  vector = [],
+  snapshot,
   timestamp = new Date().toISOString(),
 }: TampingBroadcastPayload) => {
   if (!tampingServer) return;
 
-  const snapshot = JSON.stringify({
+  const snapshotPayload = JSON.stringify({
     type: "tamping-decision",
+    sampleId,
     pt,
     decision,
     score,
     fallback,
+    vector,
+    snapshot,
     timestamp,
   });
 
   tampingServer.clients.forEach((client) => {
     if (client.readyState === client.OPEN) {
-      client.send(snapshot);
+      client.send(snapshotPayload);
     }
   });
 };

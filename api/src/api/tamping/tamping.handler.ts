@@ -23,3 +23,28 @@ export const decideTampingHandler = async (
   }
 };
 
+export const feedbackTampingHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { sampleId, label } = req.body ?? {};
+
+    if (!sampleId || typeof sampleId !== "string") {
+      return res.status(400).json({ error: "sampleId is required" });
+    }
+
+    if (label !== "PROCEED" && label !== "IGNORE") {
+      return res
+        .status(400)
+        .json({ error: "label must be PROCEED or IGNORE" });
+    }
+
+    await tampingService.submitFeedback(sampleId, label);
+    return res.status(200).json({ status: "updated" });
+  } catch (error) {
+    next(error);
+  }
+};
+

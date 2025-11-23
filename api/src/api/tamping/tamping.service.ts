@@ -12,10 +12,12 @@ interface DecisionResponse {
   decision: "PROCEED" | "IGNORE";
   score: number;
   fallback?: boolean;
+  vector?: number[];
 }
 
 interface TampingDecisionResult extends DecisionResponse {
   pt: number;
+  snapshot: string;
 }
 
 export class TampingService {
@@ -38,13 +40,16 @@ export class TampingService {
     await this.logDecision(point?.id ?? null, pt, instructions, decision);
 
     broadcastTampingDecision({
+      sampleId: decision.sample_id,
       pt,
       decision: decision.decision,
       score: decision.score,
       fallback: decision.fallback ?? false,
+      vector: decision.vector ?? [],
+      snapshot,
     });
 
-    return { ...decision, pt };
+    return { ...decision, pt, snapshot };
   }
 
   private async requestDecision(
@@ -113,6 +118,23 @@ export class TampingService {
         },
       });
     }
+  }
+
+  async submitFeedback(sampleId: string, label: "PROCEED" | "IGNORE") {
+    const response = await fetch(`${HALT_SERVICE_URL}/feedback`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sample_id: sampleId, label }),
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(
+        `Tamping feedback request failed: ${response.status} ${text}`
+      );
+    }
+
+    return response.json().catch(() => ({ status: "updated" }));
   }
 }
 
