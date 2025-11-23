@@ -45,4 +45,9 @@ export class PointsService {
   async list(): Promise<Point[]> {
     return MOCK_POINTS;
   }
+
+  async get(id: string): Promise<Point | null> {
+    const found = MOCK_POINTS.find((p) => p.id === id);
+    return found ?? null;
+  }
 }

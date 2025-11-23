@@ -15,3 +15,21 @@ export const listPointsHandler = async (
     next(error);
   }
 };
+
+export const getPointHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = req.params.id as string;
+    if (!id) return res.status(400).json({ error: "Missing point id" });
+
+    const point = await pointsService.get(id);
+    if (!point) return res.status(404).json({ error: "Point not found" });
+
+    return res.json(point);
+  } catch (error) {
+    next(error);
+  }
+};
