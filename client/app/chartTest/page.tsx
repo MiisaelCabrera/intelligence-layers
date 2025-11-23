@@ -73,7 +73,7 @@ export default function RealTimeCharts() {
             type: "area",
             animations: {
               enabled: true,
-              dynamicAnimation: { enabled: true, speed: 1000 },
+              dynamicAnimation: { enabled: true, speed: 400 },
             },
             toolbar: { show: false },
             zoom: { enabled: false },
@@ -82,9 +82,7 @@ export default function RealTimeCharts() {
           xaxis: {
             type: "datetime",
             labels: { datetimeUTC: false },
-            title: { text: "Fecha" },
           },
-          yaxis: { title: { text: "value" } },
           fill: {
             type: "gradient",
             colors: [color],
