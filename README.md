@@ -28,38 +28,6 @@ api/          → Express + TypeScript backend
 client/       → Next.js frontend
 ml-service/   → Python ML microservice (Dockerized)
 
-
-To fully run the system in development, you must start all three services.
-
-### API
-You will need a .env file that meets:
-```env
-PORT=4000
-FRONTEND_URL=http://localhost:3000
-DATABASE_URL=postgres://postgres:postgres@localhost:5432/intelligence_layers
-```
-The `DATABASE_URL` has to be prisma compatible. The one provided is an example if you decide to use the provided docker-compose.yml for local db development
-
-After this, run the prisma migrations if you don't have them, generate the prisma client with `pnpm prisma generate` and then:
-```bash
-pnpm build
-pnpm dev
-```
-
-### Client
-The client is just a simple nextjs frontend that just needs a couple of points to hit our api
-```env
-NEXT_PUBLIC_API_URL=http://localhost:4000
-NEXT_PUBLIC_WS_URL=ws://localhost:4000
-```
-
-You run with `pnpm dev`
-
-### ML-Service
-Self contained machine learning system that performs inference.
-
-All you have to do to deploy is go to the directory and do `docker compose up --build`.
-
 ### Arquitecture Diagram
 <img width="9935" height="3418" alt="image" src="https://github.com/user-attachments/assets/99883096-e8c0-4355-a587-19e70fefdfa5" />
 
