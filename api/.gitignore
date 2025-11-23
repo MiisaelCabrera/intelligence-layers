@@ -38,7 +38,6 @@ Thumbs.db
 
 # Optional: Prisma
 prisma/*.db
-prisma/migrations/
 
 # Optional: PM2
 .pids
