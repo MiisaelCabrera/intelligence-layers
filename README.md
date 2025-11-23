@@ -11,7 +11,7 @@ Monorepo for the Intelligence Layers project — containing:
 Built during the Mobility & AI Hackathon connecting Mexico 🇲🇽 and Austria 🇦🇹, hosted at IPN (Mexico City), organized by Your Future Made in Austria, WORK in AUSTRIA, and the Austrian Federal Economic Chamber.
 This repository served as a rapid prototyping environment for mobility-focused solutions addressing the Plasser & Theurer challenge.
 
-##📘 Overview
+## 📘 Overview
 
 This monorepo contains:
 
@@ -22,7 +22,7 @@ ml-service/   → Python ML microservice (Dockerized)
 
 To fully run the system in development, you must start all three services.
 
-##🚀 Quick Start (Development)
+## 🚀 Quick Start (Development)
 🔧 Prerequisites
 
 Ensure the user has:
@@ -37,7 +37,7 @@ Ensure the user has:
 
 A running PostgreSQL database or adjust the DATABASE_URL to match your setup
 
-###🟣 Backend Setup (API)
+### 🟣 Backend Setup (API)
 1) Environment Variables
 
 Create a .env file in api/:
@@ -105,7 +105,7 @@ curl -X POST -H "Content-Type: application/json" \
   http://localhost:4000/api/configs
 ```
 
-###🟢 Frontend Setup (Next.js)
+### 🟢 Frontend Setup (Next.js)
 
 From client/:
 
@@ -132,7 +132,7 @@ Frontend runs at:
 http://localhost:3000
 ```
 
-###🔵 ML Service (Python)
+### 🔵 ML Service (Python)
 
 From ml-service/:
 
@@ -157,7 +157,7 @@ startTampingSimulator();
 startUrgentSimulator();
 start... (etc)
 
-###🧰 Troubleshooting
+### 🧰 Troubleshooting
 ❌ Config not found
 
 Run seed: pnpm exec tsx prisma/seed.ts
@@ -181,7 +181,7 @@ pnpm exec prisma migrate dev
 pnpm exec prisma generate
 ```
 
-###🗂️ Development Notes
+### 🗂️ Development Notes
 
 API routes: api/src/api/*
 
@@ -189,7 +189,7 @@ Prisma schema: api/prisma/schema.prisma
 
 DB seed logic: api/src/lib/seed.ts
 
-###📈 Next Steps / Improvements
+### 📈 Next Steps / Improvements
 
 Add a full docker-compose that:
 
@@ -205,7 +205,7 @@ Add automated tests for backend routes and services
 
 Add CI/CD for monorepo deployments
 
-###📎 Appendix
+### 📎 Appendix
 📊 Database Schema
 
 DB Docs:
