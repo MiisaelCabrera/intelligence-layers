@@ -89,14 +89,13 @@ export class PointsService {
     }
   }
 
-  async appendAlert(id: number, pt: number, alerts: PointAlert[]): Promise<AppendResult> {
+  async appendAlert(pt: number, alerts: PointAlert[]): Promise<AppendResult> {
     return prisma.$transaction(async (tx) => {
-      const point = await tx.points.findUnique({ where: { id } });
+      const point = await tx.points.findFirst({ where: { pt } });
 
       if (!point) {
         const record = await tx.points.create({
           data: {
-            id,
             pt,
             alerts: toJsonValue(alerts),
             instructions: toJsonValue([] as PointInstruction[]),
@@ -111,9 +110,8 @@ export class PointsService {
       const mergedAlerts = [...currentAlerts, ...alerts];
 
       const record = await tx.points.update({
-        where: { id },
+        where: { id: point.id },
         data: {
-          pt,
           alerts: toJsonValue(mergedAlerts),
         },
       });
@@ -123,17 +121,15 @@ export class PointsService {
   }
 
   async appendInstruction(
-    id: number,
     pt: number,
     instructions: PointInstruction[]
   ): Promise<AppendResult> {
     return prisma.$transaction(async (tx) => {
-      const point = await tx.points.findUnique({ where: { id } });
+      const point = await tx.points.findFirst({ where: { pt } });
 
       if (!point) {
         const record = await tx.points.create({
           data: {
-            id,
             pt,
             alerts: toJsonValue([] as PointAlert[]),
             instructions: toJsonValue(instructions),
@@ -148,9 +144,8 @@ export class PointsService {
       const mergedInstructions = [...currentInstructions, ...instructions];
 
       const record = await tx.points.update({
-        where: { id },
+        where: { id: point.id },
         data: {
-          pt,
           instructions: toJsonValue(mergedInstructions),
         },
       });

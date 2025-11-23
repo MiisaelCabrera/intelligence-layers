@@ -307,18 +307,22 @@ export const updatePointHandler = async (
   }
 };
 
+const parsePtFromBody = (body: unknown): number | null => {
+  if (!body || typeof body !== "object") {
+    return null;
+  }
+
+  const { pt } = body as Record<string, unknown>;
+  return parseNumeric(pt);
+};
+
 export const appendAlertHandler = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const id = parseIdParam(req.params.id);
-    if (id === null) {
-      return res.status(400).json({ error: "Invalid point id" });
-    }
-
-    const ptValue = parseNumeric((req.body ?? {}).pt);
+    const ptValue = parsePtFromBody(req.body);
     if (ptValue === null) {
       return res.status(400).json({ error: "pt must be provided as a number" });
     }
@@ -337,7 +341,6 @@ export const appendAlertHandler = async (
 
     const alerts = toPointAlerts(rawAlerts);
     const { record, created } = await pointsService.appendAlert(
-      id,
       ptValue,
       alerts
     );
@@ -354,12 +357,7 @@ export const appendInstructionHandler = async (
   next: NextFunction
 ) => {
   try {
-    const id = parseIdParam(req.params.id);
-    if (id === null) {
-      return res.status(400).json({ error: "Invalid point id" });
-    }
-
-    const ptValue = parseNumeric((req.body ?? {}).pt);
+    const ptValue = parsePtFromBody(req.body);
     if (ptValue === null) {
       return res.status(400).json({ error: "pt must be provided as a number" });
     }
@@ -380,7 +378,6 @@ export const appendInstructionHandler = async (
 
     const instructions = toPointInstructions(rawInstructions);
     const { record, created } = await pointsService.appendInstruction(
-      id,
       ptValue,
       instructions
     );

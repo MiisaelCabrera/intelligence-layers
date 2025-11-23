@@ -14,7 +14,7 @@ pointsRouter.get("/", listPointsHandler);
 pointsRouter.get("/:id", getPointHandler);
 pointsRouter.post("/", createPointHandler);
 pointsRouter.put("/:id", updatePointHandler);
-pointsRouter.post("/:id/alerts", appendAlertHandler);
-pointsRouter.post("/:id/instructions", appendInstructionHandler);
+pointsRouter.post("/alerts", appendAlertHandler);
+pointsRouter.post("/instructions", appendInstructionHandler);
 
 export default pointsRouter;

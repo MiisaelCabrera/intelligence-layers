@@ -8,6 +8,7 @@ import configRouter from "./api/config/config.contract";
 import { seed } from "./lib/seed";
 import getPointHandler from "./api/points/points.contract";
 import { WebSocketServer } from "ws";
+import { startLidarSimulator } from "./scripts/lidar-simulator";
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ const allowedOrigins = [FRONTEND_URL, "localhost:3000"];
 const bootstrap = async () => {
   if (process.env.NODE_ENV !== "production") {
     await seed();
+    startLidarSimulator();
   }
 };
 
