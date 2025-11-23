@@ -6,7 +6,9 @@ export default function RealtimeData() {
 
   useEffect(() => {
     // Cambia ws://localhost:4000 por la URL de tu backend en producción
-    const ws = new WebSocket("ws://localhost:4000");
+    const ws = new WebSocket(
+      process.env.NEXT_PUBLIC_API_URL ?? "ws://localhost:4000"
+    );
 
     ws.onmessage = (event) => {
       const parsed = JSON.parse(event.data);
@@ -26,6 +28,15 @@ export default function RealtimeData() {
         {data.map((d, i) => (
           <li key={i}>
             {d.timestamp} - {d.message}
+            {d.users && (
+              <ul>
+                {d.users.map((user: any) => (
+                  <li key={user.email}>
+                    {user.name} ({user.email})
+                  </li>
+                ))}
+              </ul>
+            )}
           </li>
         ))}
       </ul>
