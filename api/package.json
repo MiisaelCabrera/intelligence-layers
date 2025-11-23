@@ -19,6 +19,9 @@
     "express": "^5.1.0",
     "pg": "^8.12.0"
   },
+  "prisma": {
+    "seed": "ts-node --transpile-only prisma/seed.ts"
+  },
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.5",
