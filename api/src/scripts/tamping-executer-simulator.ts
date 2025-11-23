@@ -28,7 +28,7 @@ export async function startTampingSimulator() {
       // Read each body only once (fetch Response bodies are single-use).
       const textPoints = await response.text();
       const textConfig = await responseConfig.text();
-      console.log(`[tamping-sim] Tamping Information and Metrics: ${textPoints} ${textConfig}`);
+      console.log(`[tamping-sim] Tamping Information and Metrics: ${textConfig}`);
 
       // Broadcast the combined info to connected tamping websocket clients
       try {
