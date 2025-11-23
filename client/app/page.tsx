@@ -1,7 +1,8 @@
-import AlertStream from '@/components/AlertStream'
-import Scene3D from '@/components/Scene3D'
-import TampingSpeed from '@/components/TampingSpeed'
-import TampingStream from '@/components/TampingStream'
+import AlertStream from "@/components/AlertStream";
+import Scene3D from "@/components/Scene3D";
+import TampingSpeed from "@/components/TampingSpeed";
+import TampingStream from "@/components/TampingStream";
+import ChartsStream from "@/components/ChartsStream";
 
 export default function HomePage() {
   return (
@@ -9,10 +10,11 @@ export default function HomePage() {
       <h1 className="text-3xl font-bold">Demo 3D</h1>
       <Scene3D />
       <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-8 px-4">
+        <ChartsStream />
         <AlertStream />
         <TampingStream />
       </div>
       <TampingSpeed />
     </main>
-  )
+  );
 }
