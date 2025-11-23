@@ -39,16 +39,31 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* OMNIVERSE 3D WINDOW – FULL WIDTH */}
-      <section className="w-full pb-10">
-        <div className="w-full border-y border-[#e5e7eb] bg-white/90 backdrop-blur-sm shadow-[0_18px_40px_rgba(15,23,42,0.06)]">
-          <div className="flex items-center justify-between px-6 md:px-10 py-4 border-b border-[#f3f4f6] text-[11px] uppercase tracking-[0.25em] text-[#9ca3af]">
-            <span>Omniverse View</span>
-            <span>Realtime · 3D</span>
-          </div>
+      {/* CONTROLS & SPEED */}
+      <section className="px-6 md:px-10 pb-10">
+        <div className="max-w-6xl mx-auto space-y-4">
+          <h2 className="text-xs md:text-sm tracking-[0.25em] uppercase text-[#9ca3af]">
+            Control Panel
+          </h2>
 
-          <div className="w-full aspect-[16/8] md:aspect-[16/7] bg-[#f3f4f6]"></div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="rounded-3xl border border-[#e5e7eb] bg-white p-6 shadow-[0_16px_30px_rgba(15,23,42,0.06)]">
+              <TampingSpeed />
+            </div>
+            <div className="w-full border-y border-[#e5e7eb] bg-white/90 backdrop-blur-sm shadow-[0_18px_40px_rgba(15,23,42,0.06)]">
+              <div className="flex items-center justify-between px-6 md:px-10 py-4 border-b border-[#f3f4f6] text-[11px] uppercase tracking-[0.25em] text-[#9ca3af]">
+                <span>Omniverse View</span>
+                <span>Realtime · 3D</span>
+              </div>
+
+              <div className="w-full aspect-[16/8] md:aspect-[16/7] bg-[#f3f4f6]"></div>
+            </div>
+          </div>
         </div>
+      </section>
+
+      <section className="m-4 p-6">
+        <ChartsStream />
       </section>
 
       {/* SYSTEM METRICS */}
@@ -59,45 +74,12 @@ export default function HomePage() {
           </h2>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="rounded-3xl border border-[#e5e7eb] bg-white p-6 shadow-[0_16px_30px_rgba(15,23,42,0.06)]"></div>
             <div className="rounded-3xl border border-[#e5e7eb] bg-white p-6 shadow-[0_16px_30px_rgba(15,23,42,0.06)]">
               <TampingStream />
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section>
-        <ChartsStream />
-      </section>
-
-      {/* CONTROLS & SPEED */}
-      <section className="px-6 md:px-10 pb-10">
-        <div className="max-w-6xl mx-auto space-y-4">
-          <h2 className="text-xs md:text-sm tracking-[0.25em] uppercase text-[#9ca3af]">
-            Control Panel
-          </h2>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="rounded-3xl border border-[#e5e7eb] bg-white p-6 shadow-[0_16px_30px_rgba(15,23,42,0.06)]">
               <SpeedControl />
             </div>
-            <div className="rounded-3xl border border-[#e5e7eb] bg-white p-6 shadow-[0_16px_30px_rgba(15,23,42,0.06)]">
-              <TampingSpeed />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ALERT STREAM */}
-      <section className="px-6 md:px-10 pb-16">
-        <div className="max-w-6xl mx-auto space-y-4">
-          <h2 className="text-xs md:text-sm tracking-[0.25em] uppercase text-[#9ca3af]">
-            Live Alerts
-          </h2>
-
-          <div className="rounded-3xl border border-[#e5e7eb] bg-white p-6 shadow-[0_16px_30px_rgba(15,23,42,0.06)]">
-            <AlertStream />
           </div>
         </div>
       </section>

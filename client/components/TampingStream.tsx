@@ -173,7 +173,8 @@ export default function TampingStream() {
     if (!container) return;
 
     const { scrollTop, clientHeight, scrollHeight } = container;
-    const atBottom = scrollTop + clientHeight >= scrollHeight - SCROLL_THRESHOLD;
+    const atBottom =
+      scrollTop + clientHeight >= scrollHeight - SCROLL_THRESHOLD;
     autoScrollRef.current = atBottom;
   };
 
@@ -221,14 +222,14 @@ export default function TampingStream() {
                   </span>
                 </div>
 
-              {typeof event.suggestedSpeedKmh === "number" && (
-                <div className="text-xs text-slate-400">
-                  AI suggested speed:{" "}
-                  <span className="text-emerald-300 font-semibold">
-                    {event.suggestedSpeedKmh.toFixed(2)} km/h
-                  </span>
-                </div>
-              )}
+                {typeof event.suggestedSpeedKmh === "number" && (
+                  <div className="text-xs text-slate-400">
+                    AI suggested speed:{" "}
+                    <span className="text-emerald-300 font-semibold">
+                      {event.suggestedSpeedKmh.toFixed(2)} km/h
+                    </span>
+                  </div>
+                )}
 
                 <div className="flex flex-wrap items-center gap-2 text-xs">
                   {event.fallback && (
@@ -270,13 +271,16 @@ export default function TampingStream() {
                   >
                     Mark Ignore
                   </button>
-                  {event.feedbackStatus === "submitted" && event.feedbackLabel && (
-                    <span className="text-xs text-emerald-400">
-                      Feedback saved ({event.feedbackLabel})
-                    </span>
-                  )}
+                  {event.feedbackStatus === "submitted" &&
+                    event.feedbackLabel && (
+                      <span className="text-xs text-emerald-400">
+                        Feedback saved ({event.feedbackLabel})
+                      </span>
+                    )}
                   {event.feedbackStatus === "error" && (
-                    <span className="text-xs text-red-400">Feedback failed</span>
+                    <span className="text-xs text-red-400">
+                      Feedback failed
+                    </span>
                   )}
                 </div>
               </article>
@@ -304,13 +308,22 @@ export default function TampingStream() {
             <div className="space-y-3 text-sm text-slate-300">
               <div className="flex flex-wrap gap-3 text-xs text-slate-400">
                 <span>
-                  sample: <span className="font-mono text-slate-200">{selected.sampleId}</span>
+                  sample:{" "}
+                  <span className="font-mono text-slate-200">
+                    {selected.sampleId}
+                  </span>
                 </span>
                 <span>
-                  pt: <span className="font-mono text-slate-200">{selected.pt.toFixed(1)}</span>
+                  pt:{" "}
+                  <span className="font-mono text-slate-200">
+                    {selected.pt.toFixed(1)}
+                  </span>
                 </span>
                 <span>
-                  confidence: <span className="font-mono text-slate-200">{selected.score.toFixed(3)}</span>
+                  confidence:{" "}
+                  <span className="font-mono text-slate-200">
+                    {selected.score.toFixed(3)}
+                  </span>
                 </span>
               </div>
 
@@ -329,7 +342,10 @@ export default function TampingStream() {
                 </h4>
                 <pre className="bg-slate-950 border border-slate-800 rounded p-3 max-h-60 overflow-y-auto text-xs">
                   {selected.vector && selected.vector.length
-                    ? selected.vector.slice(0, 24).map((v) => v.toFixed(4)).join(", ") +
+                    ? selected.vector
+                        .slice(0, 24)
+                        .map((v) => v.toFixed(4))
+                        .join(", ") +
                       (selected.vector.length > 24 ? " ..." : "")
                     : "n/a"}
                 </pre>
@@ -341,4 +357,3 @@ export default function TampingStream() {
     </section>
   );
 }
-
