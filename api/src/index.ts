@@ -12,8 +12,8 @@ import { startGprSimulator } from "./scripts/gpr-simulator";
 import { setWebSocketServer } from "./lib/websocket";
 import { startFrontCameraSimulator } from "./scripts/front-camera-simulator";
 import { startGeometryPredictorSimulator } from "./scripts/geometry-predictor-simulator";
+import tampingRouter from "./api/tamping/tamping.contract";
 import { startTampingSimulator } from "./scripts/tamping-executer-simulator";
-import { startConfigSetterSimulator } from "./scripts/config-setter-simulator";
 
 dotenv.config();
 
@@ -31,7 +31,6 @@ const bootstrap = async () => {
   startFrontCameraSimulator();
   startGeometryPredictorSimulator();
   startTampingSimulator();
-  startConfigSetterSimulator()
 };
 
 app.use(
@@ -51,6 +50,7 @@ app.use(express.json());
 app.use("/api/points", pointsRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/configs", configRouter);
+app.use("/api/tamping", tampingRouter);
 
 app.get("/api/hello", (_req: Request, res: Response) => {
   res.json({ message: "Hello from Express + TypeScript + Render!" });
@@ -59,7 +59,6 @@ app.get("/api/hello", (_req: Request, res: Response) => {
 bootstrap()
   .then(() => {
     const server = app.listen(PORT, () => {
-      console.log(` Backend running on port ${PORT}`);
     });
     const wss = new WebSocketServer({ server, path: "/ws/alerts" });
     setWebSocketServer(wss);
@@ -83,4 +82,4 @@ bootstrap()
   .catch((error) => {
     console.error("Failed to bootstrap application", error);
     process.exit(1);
-  });
+});
