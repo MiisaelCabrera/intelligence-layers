@@ -74,7 +74,6 @@ class OnlineHaltingModel:
   def embed(self, alert: AlertPayload) -> List[float]:
     text = alert_to_text(alert)
     vector = self.embedder.encode(text, normalize_embeddings=True)
-    logger.info("Generated embedding for alert label=%s pt=%.2f", alert.alert.label, alert.pt)
     return vector.tolist()
 
   def predict(self, features: Dict[str, float]) -> float:
