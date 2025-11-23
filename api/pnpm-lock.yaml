@@ -23,7 +23,7 @@ devDependencies:
     specifier: ^5.0.5
     version: 5.0.5
   '@types/node':
-    specifier: ^20.12.7
+    specifier: ^20.19.25
     version: 20.19.25
   ts-node-dev:
     specifier: ^2.0.0
