@@ -86,7 +86,7 @@ export default function RealTimeCharts() {
           fill: {
             type: "gradient",
             colors: [color],
-            gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0 },
+            gradient: { shadeIntensity: 1, opacityFrom: 0.6, opacityTo: 0 },
           },
           dataLabels: { enabled: false },
           title: { text: label },
