@@ -6,11 +6,11 @@ import pointsRouter from "./api/points/points.contract";
 import usersRouter from "./api/users/users.contract";
 import configRouter from "./api/config/config.contract";
 import { seed } from "./lib/seed";
-import getPointHandler from "./api/points/points.contract";
-import { prisma } from "./lib/prisma";
 import { WebSocketServer } from "ws";
 import { startLidarSimulator } from "./scripts/lidar-simulator";
 import { startGprSimulator } from "./scripts/gpr-simulator";
+import { setWebSocketServer } from "./lib/websocket";
+import { startFrontCameraSimulator } from "./scripts/front-camera-simulator";
 
 dotenv.config();
 
@@ -25,6 +25,7 @@ const bootstrap = async () => {
   await seed();
   startLidarSimulator();
   startGprSimulator();
+  startFrontCameraSimulator();
 };
 
 app.use(
@@ -55,24 +56,20 @@ bootstrap()
       console.log(` Backend running on port ${PORT}`);
     });
     const wss = new WebSocketServer({ server });
+    setWebSocketServer(wss);
 
-    wss.on("connection", async (ws) => {
+    wss.on("connection", (ws) => {
       console.log("New WebSocket client connected");
-
-      const users = await prisma.users.findMany();
-      console.log("Current users in the database:", users);
-      const interval = setInterval(async () => {
-        const data = {
-          timestamp: new Date(),
-          message: "Datos enviados desde backend",
-          users: users,
-        };
-        ws.send(JSON.stringify(data));
-      }, 1000);
+      ws.send(
+        JSON.stringify({
+          type: "connected",
+          timestamp: new Date().toISOString(),
+          message: "Subscribed to alert stream",
+        })
+      );
 
       ws.on("close", () => {
         console.log("Client disconnected");
-        clearInterval(interval);
       });
     });
   })

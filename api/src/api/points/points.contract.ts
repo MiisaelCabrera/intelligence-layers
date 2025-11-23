@@ -6,7 +6,6 @@ import {
   updatePointHandler,
   appendAlertHandler,
   appendInstructionHandler,
-  appendGprHandler,
 } from "./points.handler";
 
 export const pointsRouter = Router();
@@ -17,6 +16,5 @@ pointsRouter.post("/", createPointHandler);
 pointsRouter.put("/:id", updatePointHandler);
 pointsRouter.post("/alerts", appendAlertHandler);
 pointsRouter.post("/instructions", appendInstructionHandler);
-pointsRouter.post("/gpr", appendGprHandler);
 
 export default pointsRouter;

@@ -8,6 +8,7 @@ import {
   VALID_POINT_STATUSES,
   UpdatePointInput,
 } from "./points.service";
+import { broadcastAlert } from "../../lib/websocket";
 
 const pointsService = new PointsService();
 
@@ -316,17 +317,6 @@ const parsePtFromBody = (body: unknown): number | null => {
   return parseNumeric(pt);
 };
 
-const parseGprRating = (body: unknown): number | null => {
-  if (!body || typeof body !== "object") {
-    return null;
-  }
-
-  const { gprRating, rating, value } = body as Record<string, unknown>;
-  return (
-    parseNumeric(gprRating) ?? parseNumeric(rating) ?? parseNumeric(value)
-  );
-};
-
 export const appendAlertHandler = async (
   req: Request,
   res: Response,
@@ -354,6 +344,13 @@ export const appendAlertHandler = async (
     const { record, created } = await pointsService.appendAlert(
       ptValue,
       alerts
+    );
+
+    alerts.forEach((alert) =>
+      broadcastAlert({
+        pt: ptValue,
+        alert,
+      })
     );
 
     return res.status(created ? 201 : 200).json(record);
@@ -392,34 +389,6 @@ export const appendInstructionHandler = async (
       ptValue,
       instructions
     );
-
-    return res.status(created ? 201 : 200).json(record);
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const appendGprHandler = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const ptValue = parsePtFromBody(req.body);
-    if (ptValue === null) {
-      return res.status(400).json({ error: "pt must be provided as a number" });
-    }
-
-    const rating = parseGprRating(req.body);
-    if (rating === null) {
-      return res
-        .status(400)
-        .json({ error: "Body must include gprRating as a number" });
-    }
-
-    const { record, created } = await pointsService.appendInstruction(ptValue, [
-      { label: "GPRRating", value: rating },
-    ]);
 
     return res.status(created ? 201 : 200).json(record);
   } catch (error) {

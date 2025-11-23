@@ -1,27 +1,27 @@
 const API_URL = process.env.API_URL ?? "http://localhost:4000";
-const INTERVAL_MS = Number(process.env.GPR_INTERVAL_MS ?? "1500");
+const INTERVAL_MS = Number(process.env.FRONT_CAMERA_INTERVAL_MS ?? "2000");
 
 const randomFloat = (min: number, max: number) => {
   return Math.random() * (max - min) + min;
 };
 
-export async function startGprSimulator() {
+export async function startFrontCameraSimulator() {
   let counter = 1;
 
   const loop = async () => {
     const pt = Number((counter / 10).toFixed(1));
     const payload = {
       pt,
-      instructions: [
+      alerts: [
         {
-          label: "GPRRating",
-          value: Number(randomFloat(0, 100).toFixed(2)),
+          label: "frontFacingCamera",
+          value: Number(randomFloat(70, 98).toFixed(2)),
         },
       ],
     };
 
     try {
-      const response = await fetch(`${API_URL}/api/points/instructions`, {
+      const response = await fetch(`${API_URL}/api/points/alerts`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -32,11 +32,11 @@ export async function startGprSimulator() {
       if (!response.ok) {
         const text = await response.text();
         console.error(
-          `GPR simulator request failed (${response.status}): ${text}`
+          `Front camera simulator request failed (${response.status}): ${text}`
         );
       }
     } catch (error) {
-      console.error("GPR simulator request error", error);
+      console.error("Front camera simulator request error", error);
     } finally {
       counter += 1;
       setTimeout(loop, INTERVAL_MS);
