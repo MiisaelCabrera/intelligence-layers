@@ -22,11 +22,9 @@ const FRONTEND_URL = process.env.FRONTEND_URL || "*";
 const allowedOrigins = [FRONTEND_URL, "localhost:3000"];
 
 const bootstrap = async () => {
-  if (process.env.NODE_ENV !== "production") {
-    await seed();
-    startLidarSimulator();
-    startGprSimulator();
-  }
+  await seed();
+  startLidarSimulator();
+  startGprSimulator();
 };
 
 app.use(
