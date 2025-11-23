@@ -22,6 +22,10 @@ ml-service/   → Python ML microservice (Dockerized)
 
 To fully run the system in development, you must start all three services.
 
+### Arquitecture Diagram
+<img width="9935" height="3418" alt="image" src="https://github.com/user-attachments/assets/99883096-e8c0-4355-a587-19e70fefdfa5" />
+
+
 ## 🚀 Quick Start (Development)
 🔧 Prerequisites
 
